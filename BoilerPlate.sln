@@ -17,7 +17,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BoilerPlate.Persistence", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BoilerPlate.Persistence.Postgres", "src\BoilerPlate.Persistence.Postgres\BoilerPlate.Persistence.Postgres.csproj", "{9EB83F66-72A0-4C85-8F94-5133C89F0B7B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BoilerPlate.Shared", "src\BoilerPlate.Shared\BoilerPlate.Shared.csproj", "{96E1ABC5-BE62-41B8-9619-752D9085D712}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BoilerPlate.Shared.Abstraction", "src\BoilerPlate.Shared.Abstraction\BoilerPlate.Shared.Abstraction.csproj", "{96E1ABC5-BE62-41B8-9619-752D9085D712}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BoilerPlate.Shared.Infrastructure", "src\BoilerPlate.Shared.Infrastructure\BoilerPlate.Shared.Infrastructure.csproj", "{2E45EE3D-EE77-4730-AF74-491359271192}"
 EndProject

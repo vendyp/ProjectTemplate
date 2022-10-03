@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <ItemGroup>
-    <ProjectReference Include="..\BoilerPlate.Shared\BoilerPlate.Shared.csproj" />
+    <ProjectReference Include="..\BoilerPlate.Shared.Abstraction\BoilerPlate.Shared.Abstraction.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
