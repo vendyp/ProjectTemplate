@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\BoilerPlate.Shared.Abstraction\BoilerPlate.Shared.Abstraction.csproj" />
+  </ItemGroup>
+
 </Project>
