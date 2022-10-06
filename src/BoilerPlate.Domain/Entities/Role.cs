@@ -35,10 +35,5 @@ public class Role : BaseEntity
     /// </summary>
     public string NormalizedName { get; set; } = default!;
 
-    /// <summary>
-    /// Given permission to it role based on permission value object
-    /// </summary>
-    public Permission Permission { get; set; } = null!;
-
     public ICollection<RolePermission> RolePermissions { get; }
 }
