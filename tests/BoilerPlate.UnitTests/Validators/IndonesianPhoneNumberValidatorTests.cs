@@ -12,9 +12,9 @@ public class IndonesianPhoneNumberValidatorTests
         var validator = new IndonesianPhoneNumberValidator();
         var validationResult = validator.Validate(s);
         if (result)
-            Assert.True(validationResult.IsValid);
+            validationResult.IsValid.ShouldBeTrue();
         else
-            Assert.False(validationResult.IsValid);
+            validationResult.IsValid.ShouldBeFalse();
     }
 
     /// <summary>

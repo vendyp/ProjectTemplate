@@ -1,6 +1,4 @@
-﻿using Shouldly;
-
-namespace BoilerPlate.UnitTests.Validators;
+﻿namespace BoilerPlate.UnitTests.Validators;
 
 public class StringIsBase64ValidatorTests
 {
