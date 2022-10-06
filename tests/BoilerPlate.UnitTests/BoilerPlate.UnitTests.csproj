@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\BoilerPlate.Infrastructure\BoilerPlate.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\BoilerPlate.Shared.Infrastructure\BoilerPlate.Shared.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
