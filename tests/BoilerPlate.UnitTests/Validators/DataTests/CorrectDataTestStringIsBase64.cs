@@ -1,10 +1,10 @@
 ﻿using System.Text;
 
-namespace BoilerPlate.UnitTests.Validators;
+namespace BoilerPlate.UnitTests.Validators.DataTests;
 
-public class TestDataStringIsBase64 : IEnumerable<object[]>
+public class CorrectDataTestStringIsBase64 : IEnumerable<object[]>
 {
-    public TestDataStringIsBase64()
+    public CorrectDataTestStringIsBase64()
     {
         Data = new List<object[]>();
 

@@ -1,9 +1,11 @@
-﻿namespace BoilerPlate.UnitTests.Validators;
+﻿using BoilerPlate.UnitTests.Validators.DataTests;
+
+namespace BoilerPlate.UnitTests.Validators;
 
 public class StringIsBase64ValidatorTests
 {
     [Theory]
-    [ClassData(typeof(TestDataStringIsBase64))]
+    [ClassData(typeof(CorrectDataTestStringIsBase64))]
     public void TestStringIsBase64Validator(string s, bool result)
     {
         var validator = new StringIsBase64Validator();

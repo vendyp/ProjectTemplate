@@ -1,8 +1,9 @@
 ﻿using BoilerPlate.Core.UserManagement.CreateUser;
+using BoilerPlate.UnitTests.UserManagement.CreateUser.DataTests;
 
 namespace BoilerPlate.UnitTests.UserManagement.CreateUser;
 
-public class CreateUserCommandTests
+public class CreateUserCommandValidatorTests
 {
     [Fact]
     public void TestConstructCreateUserCommandShouldBeNotException()

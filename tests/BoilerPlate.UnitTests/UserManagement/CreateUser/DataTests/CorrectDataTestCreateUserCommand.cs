@@ -1,7 +1,7 @@
 ﻿using Bogus;
 using BoilerPlate.Core.UserManagement.CreateUser;
 
-namespace BoilerPlate.UnitTests.UserManagement.CreateUser;
+namespace BoilerPlate.UnitTests.UserManagement.CreateUser.DataTests;
 
 /// <summary>
 /// Create data test of create user command with username max length 100, fullname max length 100, and password max length 35
