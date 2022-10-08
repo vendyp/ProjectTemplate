@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BoilerPlate.Domain\BoilerPlate.Domain.csproj" />
+    <ProjectReference Include="..\BoilerPlate.Shared.Infrastructure\BoilerPlate.Shared.Infrastructure.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
