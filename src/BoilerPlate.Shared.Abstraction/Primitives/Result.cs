@@ -31,7 +31,7 @@ public class Result
     /// <summary>
     /// Gets a value indicating whether the result is a success result.
     /// </summary>
-    protected bool IsSuccess { get; }
+    public bool IsSuccess { get; }
 
     /// <summary>
     /// Gets a value indicating whether the result is a failure result.

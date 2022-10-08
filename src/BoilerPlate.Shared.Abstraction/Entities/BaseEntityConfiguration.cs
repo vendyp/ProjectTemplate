@@ -17,6 +17,8 @@ public abstract class BaseEntityConfiguration<TBaseEntity> : IEntityTypeConfigur
         builder.Property(e => e.DeletedBy).HasMaxLength(maxLength: 256);
         builder.Property(e => e.DeletedByName).HasMaxLength(maxLength: 256);
 
+        builder.HasQueryFilter(e => e.DeletedByAt == null);
+
         EntityConfiguration(builder);
     }
 
