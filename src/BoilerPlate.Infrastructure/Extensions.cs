@@ -1,6 +1,9 @@
-﻿using BoilerPlate.Core.Abstractions;
+﻿using System.Runtime.CompilerServices;
+using BoilerPlate.Core.Abstractions;
 using BoilerPlate.Infrastructure.Services;
 using Microsoft.Extensions.DependencyInjection;
+
+[assembly: InternalsVisibleTo("BoilerPlate.IntegrationTests")]
 
 namespace BoilerPlate.Infrastructure;
 
