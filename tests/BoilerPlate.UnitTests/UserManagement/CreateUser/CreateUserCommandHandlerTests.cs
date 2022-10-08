@@ -1,4 +1,4 @@
-﻿using BoilerPlate.Core;
+﻿using BoilerPlate.Core.UserManagement;
 using BoilerPlate.Core.UserManagement.CreateUser;
 using BoilerPlate.Domain.Entities;
 using BoilerPlate.Shared.Abstraction.Entities;
@@ -31,7 +31,7 @@ public class CreateUserCommandHandlerTests
         var result = await ctr.Handle(command, CancellationToken.None);
 
         result.IsFailure.ShouldBeTrue();
-        result.Error.Code.ShouldBe(ErrorCodes.UserAlreadyRegistered);
+        result.Error.Code.ShouldBe(ValidationErrors.UserManagementErrors.UserAlreadyRegistered);
     }
 
     /// <summary>

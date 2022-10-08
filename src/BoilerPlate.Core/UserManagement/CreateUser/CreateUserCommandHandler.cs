@@ -27,9 +27,9 @@ public sealed class CreateUserCommandHandler : ICommandHandler<CreateUserCommand
     {
         var user = await _userService.GetUserByUsernameAsync(request.NormalizedUsername, cancellationToken);
         if (user is not null)
-            return Result.Failure(new Error(ErrorCodes.UserAlreadyRegistered, "User already registered"));
+            return Result.Failure(ValidationErrors.UserManagementErrors.UserAlreadyRegistered);
 
-        var roleOfUser = await _roleService.GetRoleOfAdministratorAsync(cancellationToken);
+        var roleOfUser = await _roleService.GetRoleOfUserAsync(cancellationToken);
 
         user = new User
         {
