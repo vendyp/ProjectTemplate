@@ -1,29 +1,21 @@
 ﻿using BoilerPlate.Domain.Entities;
 using BoilerPlate.Infrastructure.Services;
-using BoilerPlate.Persistence;
+using BoilerPlate.IntegrationTests.Fixtures;
 using BoilerPlate.Shared.Abstraction.Databases;
-using BoilerPlate.UnitTests.Mocks;
-using Microsoft.EntityFrameworkCore;
 using Shouldly;
 
 namespace BoilerPlate.IntegrationTests.Services;
 
-public class UserServiceTests
+[Collection("SqlServerDatabase")]
+public class UserServiceTests : IClassFixture<SqlServerDatabaseFixture>
 {
-    private readonly IDbContext _dbContext;
     private readonly UserService _service;
+    private readonly IDbContext _dbContext;
 
-    public UserServiceTests()
+    public UserServiceTests(SqlServerDatabaseFixture fixture)
     {
-        var options = new DbContextOptionsBuilder<SqlServerDbContext>()
-            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-            .Options;
-
-        _dbContext = new SqlServerDbContext(options,
-            new ContextBuilder().Build().Object,
-            new ClockBuilder().Build().Object);
-
-        _service = new UserService(_dbContext);
+        _dbContext = fixture.DbContext;
+        _service = new UserService(fixture.DbContext);
     }
 
     [Fact]
@@ -65,5 +57,12 @@ public class UserServiceTests
 
         var result = await _service.GetUserByIdAsync(Guid.NewGuid(), CancellationToken.None);
         result.ShouldBeNull();
+    }
+
+    [Fact]
+    public async Task TestUserServiceGetDataAdministratorShouldNotBeNull()
+    {
+        var result = await _service.GetUserByIdAsync(Guid.Empty, CancellationToken.None);
+        result.ShouldNotBeNull();
     }
 }
