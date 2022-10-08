@@ -33,7 +33,7 @@ public class ApplicationInitializer : IInitializer
 
     private async Task AddRoleAdminAsync(CancellationToken cancellationToken)
     {
-        var roleAdminId = new Guid(Role.RoleAdminId);
+        var roleAdminId = new Guid(Role.DefaultRoleAdminId);
         if (await _dbContext.Set<Role>().AnyAsync(e => e.RoleId == roleAdminId, cancellationToken: cancellationToken))
             return;
 
@@ -43,15 +43,15 @@ public class ApplicationInitializer : IInitializer
             CreatedByName = "system",
             CreatedAt = _clock.CurrentServerDate(),
             RoleId = roleAdminId,
-            Code = "adm",
-            Name = Role.RoleUserAdminName,
-            NormalizedName = Role.RoleUserAdminName.ToUpper(),
+            Code = Role.DefaultRoleAdminCode,
+            Name = Role.DefaultRoleUserAdminName,
+            NormalizedName = Role.DefaultRoleUserAdminName.ToUpper(),
         }, cancellationToken);
     }
 
     private async Task AddRoleUserAsync(CancellationToken cancellationToken)
     {
-        var roleUserId = new Guid(Role.RoleUserId);
+        var roleUserId = new Guid(Role.DefaultRoleUserId);
         if (await _dbContext.Set<Role>().AnyAsync(e => e.RoleId == roleUserId, cancellationToken))
             return;
 
@@ -61,9 +61,9 @@ public class ApplicationInitializer : IInitializer
             CreatedByName = "system",
             CreatedAt = _clock.CurrentServerDate(),
             RoleId = roleUserId,
-            Code = "usr",
-            Name = Role.RoleUserName,
-            NormalizedName = Role.RoleUserName.ToUpper(),
+            Code = Role.DefaultRoleUserCode,
+            Name = Role.DefaultRoleUserName,
+            NormalizedName = Role.DefaultRoleUserName.ToUpper(),
         }, cancellationToken);
     }
 
@@ -87,7 +87,7 @@ public class ApplicationInitializer : IInitializer
         await _dbContext.Set<UserRole>().AddAsync(new UserRole
         {
             UserId = Guid.Empty,
-            RoleId = new Guid(Role.RoleAdminId)
+            RoleId = new Guid(Role.DefaultRoleAdminId)
         }, cancellationToken);
     }
 }

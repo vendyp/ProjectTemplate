@@ -16,13 +16,13 @@ public class RoleService : IRoleService
 
     public Task<Role?> GetRoleOfAdministratorAsync(CancellationToken cancellationToken)
     {
-        var id = new Guid(Role.RoleAdminId);
+        var id = new Guid(Role.DefaultRoleAdminId);
         return _roles.Where(e => e.RoleId == id).FirstOrDefaultAsync(cancellationToken);
     }
 
     public Task<Role?> GetRoleOfUserAsync(CancellationToken cancellationToken)
     {
-        var id = new Guid(Role.RoleUserId);
+        var id = new Guid(Role.DefaultRoleUserId);
         return _roles.Where(e => e.RoleId == id).FirstOrDefaultAsync(cancellationToken);
     }
 
