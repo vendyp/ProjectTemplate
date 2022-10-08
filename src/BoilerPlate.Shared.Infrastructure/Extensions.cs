@@ -71,4 +71,10 @@ public static class Extensions
 
         return rule.WithErrorCode(error.Code).WithMessage(error.Message);
     }
+
+    public static bool IsNotNullOrEmpty(this string? s)
+        => !string.IsNullOrEmpty(s);
+
+    public static bool IsNotNullOrWhiteSpace(this string? s)
+        => !string.IsNullOrWhiteSpace(s);
 }
