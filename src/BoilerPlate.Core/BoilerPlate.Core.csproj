@@ -5,6 +5,10 @@
     <ProjectReference Include="..\BoilerPlate.Shared.Infrastructure\BoilerPlate.Shared.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="UserManagement\Commands" />
+  </ItemGroup>
+
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>

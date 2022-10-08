@@ -1,5 +1,5 @@
 ﻿using BoilerPlate.Core.UserManagement;
-using BoilerPlate.Core.UserManagement.CreateUser;
+using BoilerPlate.Core.UserManagement.Commands.CreateUser;
 using BoilerPlate.Domain.Entities;
 using BoilerPlate.Shared.Abstraction.Entities;
 using BoilerPlate.UnitTests.Mocks;

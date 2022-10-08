@@ -1,4 +1,4 @@
-﻿using BoilerPlate.Core.UserManagement.EditUser;
+﻿using BoilerPlate.Core.UserManagement.Commands.EditUser;
 using BoilerPlate.UnitTests.UserManagement.EditUser.DataTests;
 
 namespace BoilerPlate.UnitTests.UserManagement.EditUser;

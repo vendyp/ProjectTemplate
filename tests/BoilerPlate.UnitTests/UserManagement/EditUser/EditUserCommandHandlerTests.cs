@@ -1,5 +1,5 @@
 ﻿using BoilerPlate.Core.UserManagement;
-using BoilerPlate.Core.UserManagement.EditUser;
+using BoilerPlate.Core.UserManagement.Commands.EditUser;
 using BoilerPlate.UnitTests.Mocks;
 
 namespace BoilerPlate.UnitTests.UserManagement.EditUser;

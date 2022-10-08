@@ -4,7 +4,7 @@ using BoilerPlate.Shared.Abstraction.Databases;
 using BoilerPlate.Shared.Abstraction.Primitives;
 using BoilerPlate.Shared.Infrastructure;
 
-namespace BoilerPlate.Core.UserManagement.EditUser;
+namespace BoilerPlate.Core.UserManagement.Commands.EditUser;
 
 public class EditUserCommandHandler : ICommandHandler<EditUserCommand, Result>
 {

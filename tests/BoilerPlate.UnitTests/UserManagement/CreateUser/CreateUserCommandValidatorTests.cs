@@ -1,4 +1,4 @@
-﻿using BoilerPlate.Core.UserManagement.CreateUser;
+﻿using BoilerPlate.Core.UserManagement.Commands.CreateUser;
 using BoilerPlate.UnitTests.UserManagement.CreateUser.DataTests;
 
 namespace BoilerPlate.UnitTests.UserManagement.CreateUser;

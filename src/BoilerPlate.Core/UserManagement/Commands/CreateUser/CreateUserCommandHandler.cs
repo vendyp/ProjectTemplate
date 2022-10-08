@@ -5,7 +5,7 @@ using BoilerPlate.Shared.Abstraction.Databases;
 using BoilerPlate.Shared.Abstraction.Primitives;
 using Microsoft.AspNetCore.Identity;
 
-namespace BoilerPlate.Core.UserManagement.CreateUser;
+namespace BoilerPlate.Core.UserManagement.Commands.CreateUser;
 
 public sealed class CreateUserCommandHandler : ICommandHandler<CreateUserCommand, Result>
 {

@@ -5,7 +5,7 @@ using BoilerPlate.Shared.Abstraction.Databases;
 using BoilerPlate.Shared.Abstraction.Primitives;
 using Microsoft.AspNetCore.Identity;
 
-namespace BoilerPlate.Core.UserManagement.ChangePasswordUser;
+namespace BoilerPlate.Core.UserManagement.Commands.ChangePasswordUser;
 
 public class ChangePasswordUserCommandHandler : ICommandHandler<ChangePasswordUserCommand, Result>
 {

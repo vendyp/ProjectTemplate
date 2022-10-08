@@ -1,4 +1,4 @@
-﻿using BoilerPlate.Core.UserManagement.EditUser;
+﻿using BoilerPlate.Core.UserManagement.Commands.EditUser;
 using BoilerPlate.Infrastructure.Services;
 using BoilerPlate.IntegrationTests.Fixtures;
 using Shouldly;
