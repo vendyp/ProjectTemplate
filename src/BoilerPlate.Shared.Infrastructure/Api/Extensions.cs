@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BoilerPlate.Shared.Infrastructure.Api;
@@ -57,4 +58,7 @@ public static class Extensions
 
         return ipAddress ?? string.Empty;
     }
+
+    public static IApplicationBuilder UseCustomExceptionHandler(this IApplicationBuilder builder)
+        => builder.UseMiddleware<CustomExceptionHandlerMiddleware>();
 }
