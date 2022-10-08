@@ -1,4 +1,5 @@
-﻿using BoilerPlate.Shared.Infrastructure;
+﻿using BoilerPlate.Shared.Abstraction.Databases;
+using BoilerPlate.Shared.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,6 +17,7 @@ public static class Extensions
             throw new Exception("Connection string is missing");
 
         services.AddDbContext<SqlServerDbContext>(x => x.UseSqlServer(options.ConnectionString));
+        services.AddScoped<IDbContext>(serviceProvider => serviceProvider.GetRequiredService<SqlServerDbContext>());
     }
 
     public static void AddSqlServer(this IServiceCollection services, Action<SqlServerDbContextOptionsBuilder>? action,
@@ -27,5 +29,6 @@ public static class Extensions
             throw new Exception("Connection string is missing");
 
         services.AddDbContext<SqlServerDbContext>(x => x.UseSqlServer(options.ConnectionString, action));
+        services.AddScoped<IDbContext>(serviceProvider => serviceProvider.GetRequiredService<SqlServerDbContext>());
     }
 }

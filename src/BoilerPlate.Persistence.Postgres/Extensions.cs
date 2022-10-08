@@ -1,4 +1,5 @@
-﻿using BoilerPlate.Shared.Infrastructure;
+﻿using BoilerPlate.Shared.Abstraction.Databases;
+using BoilerPlate.Shared.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Infrastructure;
 
@@ -15,6 +16,7 @@ public static class Extensions
             throw new Exception("Connection string is missing");
 
         services.AddNpgsql<PostgresDbContext>(options.ConnectionString);
+        services.AddScoped<IDbContext>(serviceProvider => serviceProvider.GetRequiredService<PostgresDbContext>());
     }
 
     public static void AddPostgres(this IServiceCollection services, Action<NpgsqlDbContextOptionsBuilder>? action,
@@ -26,5 +28,6 @@ public static class Extensions
             throw new Exception("Connection string is missing");
 
         services.AddNpgsql<PostgresDbContext>(options.ConnectionString, action);
+        services.AddScoped<IDbContext>(serviceProvider => serviceProvider.GetRequiredService<PostgresDbContext>());
     }
 }
