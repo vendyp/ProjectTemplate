@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BoilerPlate.Infrastructure.Services;
 
-public class RoleService : IRoleService
+internal class RoleService : IRoleService
 {
     private readonly DbSet<Role> _roles;
 
