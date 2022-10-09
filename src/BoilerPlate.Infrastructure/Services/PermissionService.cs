@@ -17,11 +17,9 @@ internal class PermissionService : IPermissionService
     public Task<Permission?> GetPermissionByIdAsync(string id, CancellationToken cancellationToken)
         => _dbContext.Set<Permission>().Where(e => e.Id == id).FirstOrDefaultAsync(cancellationToken);
 
-    public async Task<bool> AllIdIsValid(string[] ids, CancellationToken cancellationToken)
+    public async Task<bool> AllIdIsValidAsync(string[] ids, CancellationToken cancellationToken)
     {
-        var listId = ids.Distinct().ToList();
-        if (listId.Count != ids.Length)
-            throw new InvalidOperationException("Result may have duplicate value");
+        var listId = ids.ToList();
 
         var listPermission = await _dbContext.Set<Permission>().AsNoTracking().Where(e => listId.Contains(e.Id))
             .ToListAsync(cancellationToken);

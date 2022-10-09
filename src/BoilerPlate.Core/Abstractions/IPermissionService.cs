@@ -18,5 +18,5 @@ public interface IPermissionService
     /// <param name="ids">Make sure parameter that passed here doesnt have duplication</param>
     /// <param name="cancellationToken">A <see cref="CancellationToken" /> to observe while waiting for the task to complete</param>
     /// <returns></returns>
-    Task<bool> AllIdIsValid(string[] ids, CancellationToken cancellationToken);
+    Task<bool> AllIdIsValidAsync(string[] ids, CancellationToken cancellationToken);
 }
