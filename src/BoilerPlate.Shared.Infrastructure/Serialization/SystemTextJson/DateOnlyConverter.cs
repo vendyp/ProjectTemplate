@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace BoilerPlate.Shared.Infrastructure.Serialization.SystemTextJson;
 
-internal sealed class DateOnlyConverter : JsonConverter<DateOnly>
+public sealed class DateOnlyConverter : JsonConverter<DateOnly>
 {
     private readonly string _serializationFormat;
 

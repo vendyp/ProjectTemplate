@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Routing;
 
 namespace BoilerPlate.Shared.Infrastructure.Api;
 
-internal class SlugifyParameterTransformer : IOutboundParameterTransformer
+public class SlugifyParameterTransformer : IOutboundParameterTransformer
 {
     public string? TransformOutbound(object? value)
     {
