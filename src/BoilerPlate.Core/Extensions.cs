@@ -1,4 +1,10 @@
-﻿namespace BoilerPlate.Core;
+﻿using System.Reflection;
+using BoilerPlate.Core.Behaviours;
+using MediatR;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace BoilerPlate.Core;
 
 public static class Extensions
 {
@@ -14,5 +20,13 @@ public static class Extensions
         };
 
         return claims;
+    }
+
+    public static void AddCore(this IServiceCollection services)
+    {
+        services.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
+        services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+        services.AddMediatR(Assembly.GetExecutingAssembly());
+        services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
     }
 }

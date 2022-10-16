@@ -51,6 +51,7 @@ public static class Extensions
         var docs = serviceProvider.GetRequiredService<SwaggerOptions>();
 
         app.UseSwagger();
+        app.UseSwaggerUI();
         app.UseReDoc(reDoc =>
         {
             reDoc.RoutePrefix = docs.RoutePrefix;

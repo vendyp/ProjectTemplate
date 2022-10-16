@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BoilerPlate.Core\BoilerPlate.Core.csproj" />
+    <ProjectReference Include="..\BoilerPlate.Persistence\BoilerPlate.Persistence.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
