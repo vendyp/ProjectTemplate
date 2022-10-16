@@ -1,6 +1,4 @@
-﻿using FluentValidation;
-
-namespace BoilerPlate.Core.RoleManagement.Commands.EditRole;
+﻿namespace BoilerPlate.Core.RoleManagement.Commands.EditRole;
 
 public class EditRoleCommandValidator : AbstractValidator<EditRoleCommand>
 {

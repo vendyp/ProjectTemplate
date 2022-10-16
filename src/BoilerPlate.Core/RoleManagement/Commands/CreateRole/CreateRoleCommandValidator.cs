@@ -1,7 +1,4 @@
-﻿using BoilerPlate.Core.Validators;
-using FluentValidation;
-
-namespace BoilerPlate.Core.RoleManagement.Commands.CreateRole;
+﻿namespace BoilerPlate.Core.RoleManagement.Commands.CreateRole;
 
 public class CreateRoleCommandValidator : AbstractValidator<CreateRoleCommand>
 {

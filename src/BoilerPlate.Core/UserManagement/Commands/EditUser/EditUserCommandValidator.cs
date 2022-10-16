@@ -1,6 +1,4 @@
-﻿using FluentValidation;
-
-namespace BoilerPlate.Core.UserManagement.Commands.EditUser;
+﻿namespace BoilerPlate.Core.UserManagement.Commands.EditUser;
 
 public class EditUserCommandValidator : AbstractValidator<EditUserCommand>
 {

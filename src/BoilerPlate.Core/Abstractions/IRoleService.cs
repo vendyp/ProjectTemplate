@@ -1,6 +1,4 @@
-﻿using BoilerPlate.Domain.Entities;
-
-namespace BoilerPlate.Core.Abstractions;
+﻿namespace BoilerPlate.Core.Abstractions;
 
 public interface IRoleService
 {

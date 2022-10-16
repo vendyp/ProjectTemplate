@@ -1,0 +1,11 @@
+﻿global using FluentValidation;
+global using BoilerPlate.Domain.Entities;
+global using BoilerPlate.Shared.Abstraction.Databases;
+global using BoilerPlate.Shared.Abstraction.Queries;
+global using BoilerPlate.Shared.Abstraction.Commands;
+global using BoilerPlate.Shared.Abstraction.Primitives;
+global using BoilerPlate.Shared.Infrastructure;
+global using BoilerPlate.Core.Contracts;
+global using BoilerPlate.Core.Abstractions;
+global using BoilerPlate.Core.Validators;
+global using BoilerPlate.Domain.Entities.Enums;

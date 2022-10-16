@@ -1,6 +1,4 @@
-﻿using FluentValidation;
-
-namespace BoilerPlate.Core.Validators;
+﻿namespace BoilerPlate.Core.Validators;
 
 public class PasswordValidator : AbstractValidator<string>
 {

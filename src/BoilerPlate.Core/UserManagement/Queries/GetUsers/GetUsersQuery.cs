@@ -1,8 +1,4 @@
-﻿using BoilerPlate.Core.Contracts;
-using BoilerPlate.Domain.Entities;
-using BoilerPlate.Shared.Abstraction.Queries;
-
-namespace BoilerPlate.Core.UserManagement.Queries.GetUsers;
+﻿namespace BoilerPlate.Core.UserManagement.Queries.GetUsers;
 
 public sealed class GetUsersQuery : BasePagination, IQuery<PagedList<UserResponse>>
 {

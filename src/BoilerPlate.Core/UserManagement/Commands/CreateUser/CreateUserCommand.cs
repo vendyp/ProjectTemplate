@@ -1,7 +1,4 @@
-﻿using BoilerPlate.Shared.Abstraction.Commands;
-using BoilerPlate.Shared.Abstraction.Primitives;
-
-namespace BoilerPlate.Core.UserManagement.Commands.CreateUser;
+﻿namespace BoilerPlate.Core.UserManagement.Commands.CreateUser;
 
 public sealed class CreateUserCommand : ICommand<Result>
 {

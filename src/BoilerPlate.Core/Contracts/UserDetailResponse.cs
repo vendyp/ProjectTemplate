@@ -1,6 +1,4 @@
-﻿using BoilerPlate.Domain.Entities.Enums;
-
-namespace BoilerPlate.Core.Contracts;
+﻿namespace BoilerPlate.Core.Contracts;
 
 public sealed class UserDetailResponse : UserResponse
 {

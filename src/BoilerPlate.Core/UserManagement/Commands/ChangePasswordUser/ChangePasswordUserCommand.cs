@@ -1,7 +1,4 @@
-﻿using BoilerPlate.Shared.Abstraction.Commands;
-using BoilerPlate.Shared.Abstraction.Primitives;
-
-namespace BoilerPlate.Core.UserManagement.Commands.ChangePasswordUser;
+﻿namespace BoilerPlate.Core.UserManagement.Commands.ChangePasswordUser;
 
 public class ChangePasswordUserCommand : ICommand<Result>
 {

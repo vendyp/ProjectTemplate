@@ -1,9 +1,4 @@
 ﻿using System.Linq.Dynamic.Core;
-using BoilerPlate.Core.Contracts;
-using BoilerPlate.Domain.Entities;
-using BoilerPlate.Shared.Abstraction.Databases;
-using BoilerPlate.Shared.Abstraction.Queries;
-using BoilerPlate.Shared.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
 namespace BoilerPlate.Core.UserManagement.Queries.GetUsers;

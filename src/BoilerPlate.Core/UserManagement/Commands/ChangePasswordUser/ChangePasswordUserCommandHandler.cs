@@ -1,9 +1,4 @@
-﻿using BoilerPlate.Core.Abstractions;
-using BoilerPlate.Domain.Entities;
-using BoilerPlate.Shared.Abstraction.Commands;
-using BoilerPlate.Shared.Abstraction.Databases;
-using BoilerPlate.Shared.Abstraction.Primitives;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 
 namespace BoilerPlate.Core.UserManagement.Commands.ChangePasswordUser;
 

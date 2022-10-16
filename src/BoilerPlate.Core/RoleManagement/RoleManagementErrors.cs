@@ -1,6 +1,4 @@
-﻿using BoilerPlate.Shared.Abstraction.Primitives;
-
-namespace BoilerPlate.Core.RoleManagement;
+﻿namespace BoilerPlate.Core.RoleManagement;
 
 public static partial class ValidationErrors
 {
