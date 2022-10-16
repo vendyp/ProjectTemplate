@@ -1,4 +1,4 @@
-﻿namespace BoilerPlate.Shared.Infrastructure.Swagger;
+﻿namespace BoilerPlate.Shared.Infrastructure.Swaggers;
 
 internal sealed class SwaggerOptions
 {

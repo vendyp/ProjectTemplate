@@ -3,11 +3,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 
-namespace BoilerPlate.Shared.Infrastructure.Swagger;
+namespace BoilerPlate.Shared.Infrastructure.Swaggers;
 
 public static class Extensions
 {
-    public static void AddSwaggerGen(this IServiceCollection services)
+    public static void AddSwaggerGen2(this IServiceCollection services)
     {
         var options = services.GetOptions<SwaggerOptions>("auth");
 
