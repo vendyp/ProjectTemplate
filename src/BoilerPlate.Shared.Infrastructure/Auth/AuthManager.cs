@@ -31,7 +31,7 @@ internal sealed class AuthManager : IAuthManager
         _issuer = options.Issuer;
     }
 
-    public JsonWebToken CreateToken(Guid userId, string? role, string? audience,
+    public JsonWebToken CreateToken(Guid userId, string refreshToken, string? role, string? audience,
         IDictionary<string, IEnumerable<string>>? claims)
     {
         var now = _clock.CurrentDate();
@@ -73,7 +73,8 @@ internal sealed class AuthManager : IAuthManager
         var jsonWebToken = new JsonWebToken
         {
             AccessToken = token,
-            TokenExpiry = new DateTimeOffset(expires).ToUnixTimeMilliseconds(),
+            Expiry = new DateTimeOffset(expires).ToUnixTimeMilliseconds(),
+            RefreshToken = refreshToken,
             UserId = userId
         };
 

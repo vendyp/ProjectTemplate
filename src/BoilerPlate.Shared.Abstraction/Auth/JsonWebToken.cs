@@ -1,4 +1,6 @@
-﻿namespace BoilerPlate.Shared.Abstraction.Auth;
+﻿using System.Text.Json.Serialization;
+
+namespace BoilerPlate.Shared.Abstraction.Auth;
 
 public sealed class JsonWebToken
 {
@@ -8,10 +10,8 @@ public sealed class JsonWebToken
     }
 
     public Guid UserId { get; init; }
-    public long TokenExpiry { get; init; }
-    public string AccessToken { get; init; } = default!;
-    public string RefreshToken { get; init; } = default!;
-    public string Username { get; init; } = default!;
-    public string Email { get; init; } = default!;
-    public IDictionary<string, IEnumerable<string>> Claims { get; }
+    public long Expiry { get; init; }
+    public string AccessToken { get; init; } = null!;
+    public string RefreshToken { get; init; } = null!;
+    [JsonIgnore] public IDictionary<string, IEnumerable<string>> Claims { get; }
 }

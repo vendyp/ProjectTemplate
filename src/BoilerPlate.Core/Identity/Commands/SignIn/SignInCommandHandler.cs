@@ -41,11 +41,14 @@ public sealed class SignInCommandHandler : ICommandHandler<SignInCommand, Result
             DeviceType = request.GetDeviceType()
         });
 
+        await _dbContext.SaveChangesAsync(cancellationToken);
+
         var claims = Extensions.GenerateCustomClaims(user, request.GetDeviceType());
 
-        var jwt = _authManager.CreateToken(user.UserId, role: null, audience: null, claims: claims);
+        var jwt = _authManager.CreateToken(user.UserId, refreshToken, role: null, audience: null, claims: claims);
 
-        await _dbContext.SaveChangesAsync(cancellationToken);
+        //jwt claims clear, for result only
+        jwt.Claims.Clear();
 
         return Result.Create(jwt, null!);
     }
