@@ -1,5 +1,6 @@
 ﻿using BoilerPlate.Core.Identity.Commands.SignIn;
 using BoilerPlate.Core.Identity.Queries;
+using BoilerPlate.Core.Identity.Queries.GetMe;
 using Microsoft.AspNetCore.Authorization;
 
 namespace BoilerPlate.Api.Controllers;

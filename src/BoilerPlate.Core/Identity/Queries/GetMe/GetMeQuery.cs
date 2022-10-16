@@ -1,4 +1,4 @@
-﻿namespace BoilerPlate.Core.Identity.Queries;
+﻿namespace BoilerPlate.Core.Identity.Queries.GetMe;
 
 public sealed class GetMeQuery : IQuery<Maybe<MeResponse?>>
 {
