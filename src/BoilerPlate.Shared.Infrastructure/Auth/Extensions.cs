@@ -12,7 +12,6 @@ namespace BoilerPlate.Shared.Infrastructure.Auth;
 public static class Extensions
 {
     private const string AccessTokenCookieName = "__access-token";
-    private const string ClientIdHeaderName = "x-client-id";
     private const string AuthorizationHeader = "authorization";
 
     public static void AddAuth(this IServiceCollection services,
@@ -91,21 +90,7 @@ public static class Extensions
 
                 o.Events = new JwtBearerEvents
                 {
-                    OnTokenValidated = context =>
-                    {
-                        if (!context.Request.Headers.TryGetValue(ClientIdHeaderName, out var clientId))
-                        {
-                            context.Fail("Invalid");
-                            return Task.CompletedTask;
-                        }
-
-                        // get client id from claims
-                        var claim = context.Principal!.Claims.First(e => e.Type == "ci");
-                        if (claim.Value != clientId.ToString())
-                            context.Fail("Invalid");
-
-                        return Task.CompletedTask;
-                    },
+                    OnTokenValidated = _ => Task.CompletedTask,
                 };
 
                 optionsFactory?.Invoke(o);

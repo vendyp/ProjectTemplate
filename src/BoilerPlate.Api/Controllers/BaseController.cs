@@ -1,4 +1,6 @@
-﻿namespace BoilerPlate.Api.Controllers;
+﻿using BoilerPlate.Shared.Abstraction.Contexts;
+
+namespace BoilerPlate.Api.Controllers;
 
 /// <summary>
 /// Represents the base API controller.
@@ -6,16 +8,9 @@
 [Route("api/[controller]")]
 public class BaseController : ControllerBase
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ApiController"/> class.
-    /// </summary>
-    /// <param name="sender">The sender.</param>
-    protected BaseController(ISender sender) => Sender = sender;
-
-    /// <summary>
-    /// Gets the sender.
-    /// </summary>
-    protected ISender Sender { get; }
+    protected ISender Sender => HttpContext.RequestServices.GetRequiredService<ISender>();
+    private IContext? _context;
+    protected IContext? Context => _context ??= HttpContext.RequestServices.GetService<IContext>();
 
     /// <summary>
     /// Creates an <see cref="BadRequestObjectResult"/> that produces a <see cref="StatusCodes.Status400BadRequest"/>.

@@ -24,10 +24,9 @@ internal sealed class AuthManager : IAuthManager
 
         _options = options;
         _clock = clock;
-        if (string.IsNullOrWhiteSpace(options.IssuerSigningKey))
-            _signingCredentials =
-                new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(options.IssuerSigningKey!)),
-                    SecurityAlgorithms.HmacSha256);
+        _signingCredentials =
+            new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(options.IssuerSigningKey!)),
+                SecurityAlgorithms.HmacSha256);
         _issuer = options.Issuer;
     }
 
