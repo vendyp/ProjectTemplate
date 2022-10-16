@@ -1,6 +1,6 @@
 ﻿namespace BoilerPlate.Shared.Infrastructure.Auth;
 
-internal sealed class AuthOptions
+public sealed class AuthOptions
 {
     public bool AuthenticationDisabled { get; set; }
     public string? Issuer { get; set; }
