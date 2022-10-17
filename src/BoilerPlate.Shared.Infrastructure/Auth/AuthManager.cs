@@ -11,7 +11,7 @@ internal sealed class AuthManager : IAuthManager
 {
     private readonly AuthOptions _options;
     private readonly IClock _clock;
-    private readonly SigningCredentials _signingCredentials = null!;
+    private readonly SigningCredentials _signingCredentials;
     private readonly string? _issuer;
 
     public AuthManager(AuthOptions options, IClock clock)
@@ -30,7 +30,8 @@ internal sealed class AuthManager : IAuthManager
         _issuer = options.Issuer;
     }
 
-    public JsonWebToken CreateToken(Guid userId, string refreshToken, string? role, string? audience,
+    public JsonWebToken CreateToken(Guid userId, string refreshToken, string? role,
+        string? audience,
         IDictionary<string, IEnumerable<string>>? claims)
     {
         var now = _clock.CurrentDate();
@@ -39,7 +40,9 @@ internal sealed class AuthManager : IAuthManager
             new(JwtRegisteredClaimNames.Sub, userId.ToString()),
             new(JwtRegisteredClaimNames.UniqueName, userId.ToString()),
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new(JwtRegisteredClaimNames.Iat, new DateTimeOffset(now).ToUnixTimeMilliseconds().ToString())
+            new(JwtRegisteredClaimNames.Iat, new DateTimeOffset(now).ToUnixTimeMilliseconds().ToString()),
+            new("idt", refreshToken),
+            new("ver", "1.0.0")
         };
 
         if (!string.IsNullOrWhiteSpace(role))

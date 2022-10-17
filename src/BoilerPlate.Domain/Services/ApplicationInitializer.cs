@@ -11,13 +11,13 @@ public class ApplicationInitializer : IInitializer
 {
     private readonly IDbContext _dbContext;
     private readonly IPasswordHasher<User> _passwordHasher;
-    private readonly IClock _clock;
+    private readonly DateTime _now;
 
     public ApplicationInitializer(IDbContext dbContext, IPasswordHasher<User> passwordHasher, IClock clock)
     {
         _dbContext = dbContext;
         _passwordHasher = passwordHasher;
-        _clock = clock;
+        _now = clock.CurrentDate();
     }
 
     public async Task ExecuteAsync(CancellationToken cancellationToken)
@@ -41,7 +41,7 @@ public class ApplicationInitializer : IInitializer
         {
             CreatedBy = null,
             CreatedByName = "system",
-            CreatedAt = _clock.CurrentServerDate(),
+            CreatedAt = _now,
             RoleId = roleAdminId,
             Code = Role.DefaultRoleAdminCode,
             Name = Role.DefaultRoleUserAdminName,
@@ -59,7 +59,7 @@ public class ApplicationInitializer : IInitializer
         {
             CreatedBy = null,
             CreatedByName = "system",
-            CreatedAt = _clock.CurrentServerDate(),
+            CreatedAt = _now,
             RoleId = roleUserId,
             Code = Role.DefaultRoleUserCode,
             Name = Role.DefaultRoleUserName,
@@ -78,9 +78,10 @@ public class ApplicationInitializer : IInitializer
             Username = "admin",
             NormalizedUsername = "admin".ToUpper(),
             Password = _passwordHasher.HashPassword(default!, "Qwerty@1234"),
+            LastPasswordChangeAt = _now,
             FullName = "Administrator",
             UserState = UserState.Active,
-            CreatedAt = _clock.CurrentServerDate(),
+            CreatedAt = _now,
             CreatedByName = "system"
         }, cancellationToken);
 

@@ -55,7 +55,7 @@ public class Result
     /// <typeparam name="TValue">The result type.</typeparam>
     /// <param name="value">The result value.</param>
     /// <returns>A new instance of <see cref="Result{TValue}"/> with the success flag set.</returns>
-    protected static Result<TValue> Success<TValue>(TValue value) => new(value, true, Error.None);
+    public static Result<TValue> Success<TValue>(TValue value) => new(value, true, Error.None);
 
     /// <summary>
     /// Creates a new <see cref="Result{TValue}"/> with the specified nullable value and the specified error.

@@ -1,6 +1,7 @@
-﻿using BoilerPlate.Core.Identity.Commands.SignIn;
-using BoilerPlate.Core.Identity.Queries;
+﻿using BoilerPlate.Core.Identity.Commands.ChangePassword;
+using BoilerPlate.Core.Identity.Commands.SignIn;
 using BoilerPlate.Core.Identity.Queries.GetMe;
+using BoilerPlate.Shared.Infrastructure.Primitives;
 using Microsoft.AspNetCore.Authorization;
 
 namespace BoilerPlate.Api.Controllers;
@@ -35,5 +36,25 @@ public sealed class IdentityController : BaseController
     {
         var result = await Sender.Send(new GetMeQuery { UserId = Context!.Identity.Id }, cancellationToken);
         return result.HasValue ? Ok(result.Value!) : BadRequest();
+    }
+
+    /// <summary>
+    /// Change Password User API
+    /// </summary>
+    /// <param name="command"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    [HttpPut("password")]
+    [Authorize]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> ChangePasswordAsync([FromBody] ChangePasswordCommand command,
+        CancellationToken cancellationToken)
+    {
+        command.SetUserId(Context!.Identity.Id);
+
+        return await Result.Success(command)
+            .Bind(x => Sender.Send(x, cancellationToken))
+            .Match(Ok, BadRequest);
     }
 }

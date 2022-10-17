@@ -1,4 +1,5 @@
 ﻿using BoilerPlate.Shared.Abstraction.Auth;
+using BoilerPlate.Shared.Abstraction.Storage;
 using BoilerPlate.Shared.Abstraction.Time;
 using BoilerPlate.Shared.Infrastructure.Auth;
 
@@ -11,15 +12,17 @@ public sealed class SignInCommandHandler : ICommandHandler<SignInCommand, Result
     private readonly IClock _clock;
     private readonly AuthOptions _authOptions;
     private readonly IAuthManager _authManager;
+    private readonly IRequestStorage _requestStorage;
 
     public SignInCommandHandler(IUserService userService, IDbContext dbContext, IClock clock, AuthOptions authOptions,
-        IAuthManager authManager)
+        IAuthManager authManager, IRequestStorage requestStorage)
     {
         _userService = userService;
         _dbContext = dbContext;
         _clock = clock;
         _authOptions = authOptions;
         _authManager = authManager;
+        _requestStorage = requestStorage;
     }
 
     public async Task<Result<JsonWebToken>> Handle(SignInCommand request, CancellationToken cancellationToken)
@@ -42,6 +45,12 @@ public sealed class SignInCommandHandler : ICommandHandler<SignInCommand, Result
         });
 
         await _dbContext.SaveChangesAsync(cancellationToken);
+
+        _requestStorage.Set($"{user.UserId}{refreshToken}",
+            new UserIdentifier
+            {
+                UserId = user.UserId, IdentifierId = refreshToken, LastChangePassword = user.LastPasswordChangeAt!.Value
+            }, _authOptions.Expiry);
 
         var claims = Extensions.GenerateCustomClaims(user, request.GetDeviceType());
 

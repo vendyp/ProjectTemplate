@@ -1,5 +1,7 @@
-﻿using System.Text;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Text;
 using BoilerPlate.Shared.Abstraction.Auth;
+using BoilerPlate.Shared.Abstraction.Storage;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization.Policy;
@@ -90,7 +92,20 @@ public static class Extensions
 
                 o.Events = new JwtBearerEvents
                 {
-                    OnTokenValidated = _ => Task.CompletedTask,
+                    OnTokenValidated = context =>
+                    {
+                        var requestStorage = context.HttpContext.RequestServices.GetRequiredService<IRequestStorage>();
+
+                        // get client id from claims
+                        var idt = context.Principal!.Claims.First(e => e.Type == "idt");
+                        var userId = context.Principal!.Claims.First(e => e.Type == "xid");
+
+                        var userIdentifier = requestStorage.Get<UserIdentifier>($"{userId.Value}{idt.Value}");
+                        if (userIdentifier is null)
+                            context.Fail("Invalid");
+
+                        return Task.CompletedTask;
+                    }
                 };
 
                 optionsFactory?.Invoke(o);

@@ -15,7 +15,7 @@ internal sealed class RequestStorage : IRequestStorage
     public void Set<T>(string key, T value, TimeSpan? duration = null)
         => _cache.Set(key, value, duration ?? TimeSpan.FromSeconds(5));
 
-    public T Get<T>(string key) => _cache.Get<T>(key);
+    public T? Get<T>(string key) => _cache.Get<T>(key);
 
     public void Remove(string key) => _cache.Remove(key);
 }

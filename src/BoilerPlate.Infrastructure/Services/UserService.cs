@@ -9,17 +9,17 @@ namespace BoilerPlate.Infrastructure.Services;
 internal class UserService : IUserService
 {
     private readonly IDbContext _dbContext;
-    private readonly IPasswordHasher<User>? _user;
+    private readonly IPasswordHasher<User>? _passwordHasher;
 
     public UserService(IDbContext dbContext)
     {
         _dbContext = dbContext;
     }
 
-    public UserService(IDbContext dbContext, IPasswordHasher<User> user) : this(dbContext)
+    public UserService(IDbContext dbContext, IPasswordHasher<User> passwordHasher) : this(dbContext)
     {
         _dbContext = dbContext;
-        _user = user;
+        _passwordHasher = passwordHasher;
     }
 
     public Task<User?> GetUserByIdAsync(Guid userId, CancellationToken cancellationToken)
@@ -33,5 +33,9 @@ internal class UserService : IUserService
     }
 
     public bool VerifyPassword(string currentPassword, string password)
-        => _user?.VerifyHashedPassword(default!, currentPassword, password) == PasswordVerificationResult.Success;
+        => _passwordHasher?.VerifyHashedPassword(default!, currentPassword, password) ==
+           PasswordVerificationResult.Success;
+
+    public string HashPassword(string password)
+        => _passwordHasher?.HashPassword(default!, password)!;
 }

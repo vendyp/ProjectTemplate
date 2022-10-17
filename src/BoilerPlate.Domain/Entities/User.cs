@@ -36,6 +36,8 @@ public class User : BaseEntity
     /// </summary>
     public string? Password { get; set; }
 
+    public DateTime? LastPasswordChangeAt { get; set; }
+
     /// <summary>
     /// Value object of Email
     /// </summary>
