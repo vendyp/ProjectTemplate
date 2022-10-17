@@ -1,5 +1,4 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Text;
+﻿using System.Text;
 using BoilerPlate.Shared.Abstraction.Auth;
 using BoilerPlate.Shared.Abstraction.Storage;
 using Microsoft.AspNetCore.Authentication;
