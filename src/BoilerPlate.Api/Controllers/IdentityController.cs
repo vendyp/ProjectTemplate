@@ -1,4 +1,5 @@
-﻿using BoilerPlate.Core.Identity.Commands.ChangePassword;
+﻿using BoilerPlate.Core.Identity.Commands.ChangeEmail;
+using BoilerPlate.Core.Identity.Commands.ChangePassword;
 using BoilerPlate.Core.Identity.Commands.RefreshToken;
 using BoilerPlate.Core.Identity.Commands.SignIn;
 using BoilerPlate.Core.Identity.Queries.GetMe;
@@ -74,4 +75,20 @@ public sealed class IdentityController : BaseController
         var result = await Sender.Send(command, cancellationToken);
         return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
     }
+
+    /// <summary>
+    /// Change Email API
+    /// </summary>
+    /// <param name="command"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    [HttpPut("email")]
+    [Authorize]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
+    public Task<IActionResult> ChangeEmailAsync([FromBody] ChangeEmailCommand command,
+        CancellationToken cancellationToken)
+        => Result.Success(command.SetUserId(Context!.Identity.Id))
+            .Bind(x => Sender.Send(x, cancellationToken))
+            .Match(Ok, BadRequest);
 }

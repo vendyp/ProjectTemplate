@@ -4,6 +4,7 @@ using BoilerPlate.Shared.Infrastructure;
 using BoilerPlate.Shared.Infrastructure.Auth;
 using BoilerPlate.Shared.Infrastructure.Contexts;
 using BoilerPlate.Shared.Infrastructure.Logging;
+using BoilerPlate.Shared.Infrastructure.Security;
 using BoilerPlate.Shared.Infrastructure.Serialization;
 using BoilerPlate.Shared.Infrastructure.Serialization.SystemTextJson;
 using BoilerPlate.Shared.Infrastructure.Services;
@@ -29,6 +30,7 @@ builder.Services.AddContext();
 builder.Services.AddApplicationInitializer();
 builder.Services.AddLogging();
 builder.Services.AddSwaggerGen2();
+builder.Services.AddSecurity();
 builder.Services.AddControllers(options =>
     {
         options.Conventions.Add(new RouteTokenTransformerConvention(new SlugifyParameterTransformer()));
