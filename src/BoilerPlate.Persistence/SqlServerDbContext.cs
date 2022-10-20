@@ -65,8 +65,8 @@ public class SqlServerDbContext : DbContext, IDbContext
                         entry.Entity.CreatedByName = _context.Identity.Username;
                     }
 
-                    entry.Entity.CreatedAt ??= _clock.CurrentDate();
-                    entry.Entity.CreatedAtServer ??= _clock.CurrentServerDate();
+                    entry.Entity.CreatedAt = _clock.CurrentDate();
+                    entry.Entity.CreatedAtServer = _clock.CurrentServerDate();
                     break;
                 }
                 case EntityState.Modified:
@@ -84,8 +84,8 @@ public class SqlServerDbContext : DbContext, IDbContext
                         }
                     }
 
-                    entry.Entity.LastUpdatedAt ??= _clock.CurrentDate();
-                    entry.Entity.LastUpdatedAtServer ??= _clock.CurrentServerDate();
+                    entry.Entity.LastUpdatedAt = _clock.CurrentDate();
+                    entry.Entity.LastUpdatedAtServer = _clock.CurrentServerDate();
                     break;
                 case EntityState.Detached:
                     break;
