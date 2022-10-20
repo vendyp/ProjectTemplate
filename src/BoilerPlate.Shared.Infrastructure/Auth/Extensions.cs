@@ -98,9 +98,13 @@ public static class Extensions
                         // get client id from claims
                         var idt = context.Principal!.Claims.First(e => e.Type == "idt");
                         var userId = context.Principal!.Claims.First(e => e.Type == "xid");
+                        var idd = context.Principal!.Claims.First(e => e.Type == "idd");
 
                         var userIdentifier = requestStorage.Get<UserIdentifier>($"{userId.Value}{idt.Value}");
                         if (userIdentifier is null)
+                            context.Fail("Invalid");
+
+                        if (idd.Value != userIdentifier!.TokenId)
                             context.Fail("Invalid");
 
                         return Task.CompletedTask;

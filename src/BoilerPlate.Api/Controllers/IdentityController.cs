@@ -1,5 +1,5 @@
-﻿using BoilerPlate.Core.Contracts;
-using BoilerPlate.Core.Identity.Commands.ChangePassword;
+﻿using BoilerPlate.Core.Identity.Commands.ChangePassword;
+using BoilerPlate.Core.Identity.Commands.RefreshToken;
 using BoilerPlate.Core.Identity.Commands.SignIn;
 using BoilerPlate.Core.Identity.Queries.GetMe;
 using BoilerPlate.Shared.Infrastructure.Primitives;
@@ -57,5 +57,21 @@ public sealed class IdentityController : BaseController
         return await Result.Success(command)
             .Bind(x => Sender.Send(x, cancellationToken))
             .Match(Ok, BadRequest);
+    }
+
+    /// <summary>
+    /// Refresh Token API
+    /// </summary>
+    /// <param name="command"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    [HttpPost("refresh-token")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> RefreshTokenAsync([FromBody] RefreshTokenCommand command,
+        CancellationToken cancellationToken)
+    {
+        var result = await Sender.Send(command, cancellationToken);
+        return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
     }
 }

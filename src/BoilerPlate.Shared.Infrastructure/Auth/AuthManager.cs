@@ -30,7 +30,7 @@ internal sealed class AuthManager : IAuthManager
         _issuer = options.Issuer;
     }
 
-    public JsonWebToken CreateToken(Guid userId, string clientId, string refreshToken, string? role,
+    public JsonWebToken CreateToken(Guid userId, string clientId, string refreshToken, string idd, string? role,
         string? audience,
         IDictionary<string, IEnumerable<string>>? claims)
     {
@@ -41,6 +41,7 @@ internal sealed class AuthManager : IAuthManager
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             new(JwtRegisteredClaimNames.Iat, new DateTimeOffset(now).ToUnixTimeMilliseconds().ToString()),
             new("idt", clientId),
+            new("idd", idd),
             new("ver", "1.0.0")
         };
 
