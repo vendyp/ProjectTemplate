@@ -1,4 +1,5 @@
-﻿using BoilerPlate.Core.Identity.Commands.ChangePassword;
+﻿using BoilerPlate.Core.Contracts;
+using BoilerPlate.Core.Identity.Commands.ChangePassword;
 using BoilerPlate.Core.Identity.Commands.SignIn;
 using BoilerPlate.Core.Identity.Queries.GetMe;
 using BoilerPlate.Shared.Infrastructure.Primitives;

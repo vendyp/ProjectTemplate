@@ -14,7 +14,6 @@ public static class Extensions
         var claims = new Dictionary<string, IEnumerable<string>>
         {
             ["xid"] = new[] { user.UserId.ToString() },
-            ["givenName"] = new[] { user.Username },
             ["usr"] = new[] { user.Username },
             ["deviceType"] = new[] { deviceType.ToString() }
         };

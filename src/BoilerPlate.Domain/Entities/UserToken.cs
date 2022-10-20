@@ -24,6 +24,8 @@ public class UserToken : BaseEntity
 
     public User? User { get; set; }
 
+    public string ClientId { get; set; } = default!;
+
     /// <summary>
     /// Key to use refresh token scenario
     /// </summary>

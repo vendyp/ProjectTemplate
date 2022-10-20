@@ -10,5 +10,9 @@ public sealed class UserTokenConfiguration : BaseEntityConfiguration<UserToken>
     {
         builder.HasKey(e => e.UserTokenId);
         builder.Property(e => e.UserTokenId).ValueGeneratedNever();
+
+        builder.Property(e => e.ClientId).HasMaxLength(256);
+
+        builder.Property(e => e.RefreshToken).HasMaxLength(256);
     }
 }

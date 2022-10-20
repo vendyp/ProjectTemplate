@@ -41,7 +41,7 @@ internal sealed class ChangePasswordCommandHandler : ICommandHandler<ChangePassw
             foreach (var userToken in userTokens)
             {
                 userToken.IsUsed = true;
-                listUserIdentity.Add(userToken.RefreshToken);
+                listUserIdentity.Add(userToken.ClientId);
             }
         }
 

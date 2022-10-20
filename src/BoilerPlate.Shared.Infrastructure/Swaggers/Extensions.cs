@@ -23,7 +23,6 @@ public static class Extensions
 
             swagger.EnableAnnotations();
             swagger.OperationFilter<AddAuthorizationHeaderOperationFilter>();
-            swagger.OperationFilter<AddClientIdHeaderOperationFilter>();
             swagger.CustomSchemaIds(x => x.FullName);
             swagger.SwaggerDoc("v1", new OpenApiInfo
             {
