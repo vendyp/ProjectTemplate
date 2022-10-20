@@ -2,6 +2,7 @@
 using BoilerPlate.Core.Identity.Commands.ChangePassword;
 using BoilerPlate.Core.Identity.Commands.RefreshToken;
 using BoilerPlate.Core.Identity.Commands.SignIn;
+using BoilerPlate.Core.Identity.Commands.VerifyEmail;
 using BoilerPlate.Core.Identity.Queries.GetMe;
 using BoilerPlate.Shared.Infrastructure.Primitives;
 using Microsoft.AspNetCore.Authorization;
@@ -89,6 +90,21 @@ public sealed class IdentityController : BaseController
     public Task<IActionResult> ChangeEmailAsync([FromBody] ChangeEmailCommand command,
         CancellationToken cancellationToken)
         => Result.Success(command.SetUserId(Context!.Identity.Id))
+            .Bind(x => Sender.Send(x, cancellationToken))
+            .Match(Ok, BadRequest);
+
+    /// <summary>
+    /// Verify Email API
+    /// </summary>
+    /// <param name="code"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    [HttpPost("verify-email")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
+    public Task<IActionResult> VerifyEmailAsync([FromQuery] string code,
+        CancellationToken cancellationToken)
+        => Result.Success(new VerifyEmailCommand { Code = code })
             .Bind(x => Sender.Send(x, cancellationToken))
             .Match(Ok, BadRequest);
 }
