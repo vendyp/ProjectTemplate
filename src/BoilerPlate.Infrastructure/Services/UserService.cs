@@ -22,13 +22,17 @@ internal class UserService : IUserService
         _passwordHasher = passwordHasher;
     }
 
+    public IQueryable<User> GetBaseQuery()
+        => _dbContext.Set<User>().Include(e => e.UserRoles)
+            .ThenInclude(e => e.Role).AsQueryable();
+
     public Task<User?> GetUserByIdAsync(Guid userId, CancellationToken cancellationToken)
-        => _dbContext.Set<User>().Where(e => e.UserId == userId).FirstOrDefaultAsync(cancellationToken);
+        => GetBaseQuery().Where(e => e.UserId == userId).FirstOrDefaultAsync(cancellationToken);
 
     public Task<User?> GetUserByUsernameAsync(string username, CancellationToken cancellationToken)
     {
         username = username.ToUpperInvariant();
-        return _dbContext.Set<User>().Where(e => e.NormalizedUsername == username)
+        return GetBaseQuery().Where(e => e.NormalizedUsername == username)
             .FirstOrDefaultAsync(cancellationToken);
     }
 
