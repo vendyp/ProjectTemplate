@@ -1,5 +1,6 @@
 ﻿using BoilerPlate.Domain.Entities.Enums;
 using BoilerPlate.Shared.Abstraction.Entities;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace BoilerPlate.Domain.Entities;
 
@@ -30,4 +31,13 @@ public class UserRoleLog : BaseEntity
     /// Default value is UserRoleLogType.Given
     /// </summary>
     public UserRoleLogType Type { get; set; }
+}
+
+public sealed class UserRoleLogConfiguration : BaseEntityConfiguration<UserRoleLog>
+{
+    protected override void EntityConfiguration(EntityTypeBuilder<UserRoleLog> builder)
+    {
+        builder.HasKey(e => e.UserRoleLogId);
+        builder.Property(e => e.UserRoleLogId).ValueGeneratedNever();
+    }
 }

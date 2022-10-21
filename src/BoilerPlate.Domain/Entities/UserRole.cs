@@ -1,4 +1,5 @@
 ﻿using BoilerPlate.Shared.Abstraction.Entities;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace BoilerPlate.Domain.Entities;
 
@@ -17,4 +18,12 @@ public class UserRole : BaseEntity
     public Guid RoleId { get; set; }
 
     public Role? Role { get; set; }
+}
+
+public sealed class UserRoleConfiguration : BaseEntityConfiguration<UserRole>
+{
+    protected override void EntityConfiguration(EntityTypeBuilder<UserRole> builder)
+    {
+        builder.HasKey(e => new { e.UserId, e.RoleId });
+    }
 }

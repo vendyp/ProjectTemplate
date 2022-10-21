@@ -1,5 +1,6 @@
 ﻿using BoilerPlate.Domain.Entities.Enums;
 using BoilerPlate.Shared.Abstraction.Entities;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace BoilerPlate.Domain.Entities;
 
@@ -52,5 +53,18 @@ public class UserToken : BaseEntity
     {
         IsUsed = true;
         UsedAt = dt;
+    }
+}
+
+public sealed class UserTokenConfiguration : BaseEntityConfiguration<UserToken>
+{
+    protected override void EntityConfiguration(EntityTypeBuilder<UserToken> builder)
+    {
+        builder.HasKey(e => e.UserTokenId);
+        builder.Property(e => e.UserTokenId).ValueGeneratedNever();
+
+        builder.Property(e => e.ClientId).HasMaxLength(256);
+
+        builder.Property(e => e.RefreshToken).HasMaxLength(256);
     }
 }

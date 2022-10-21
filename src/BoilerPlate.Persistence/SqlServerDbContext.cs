@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using BoilerPlate.Domain;
 using BoilerPlate.Shared.Abstraction.Contexts;
 using BoilerPlate.Shared.Abstraction.Databases;
 using BoilerPlate.Shared.Abstraction.Entities;
@@ -103,7 +104,7 @@ public class SqlServerDbContext : DbContext, IDbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(Marker).Assembly);
         base.OnModelCreating(modelBuilder);
     }
 }

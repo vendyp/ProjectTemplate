@@ -15,13 +15,13 @@ internal class PermissionService : IPermissionService
     }
 
     public Task<Permission?> GetPermissionByIdAsync(string id, CancellationToken cancellationToken)
-        => _dbContext.Set<Permission>().Where(e => e.Id == id).FirstOrDefaultAsync(cancellationToken);
+        => _dbContext.Set<Permission>().Where(e => e.Code == id).FirstOrDefaultAsync(cancellationToken);
 
     public async Task<bool> AllIdIsValidAsync(string[] ids, CancellationToken cancellationToken)
     {
         var listId = ids.ToList();
 
-        var listPermission = await _dbContext.Set<Permission>().AsNoTracking().Where(e => listId.Contains(e.Id))
+        var listPermission = await _dbContext.Set<Permission>().AsNoTracking().Where(e => listId.Contains(e.Code))
             .ToListAsync(cancellationToken);
 
         if (!listPermission.Any()) return false;

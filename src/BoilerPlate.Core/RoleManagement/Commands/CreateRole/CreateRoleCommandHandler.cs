@@ -27,8 +27,8 @@ public class CreateRoleCommandHandler : ICommandHandler<CreateRoleCommand, Resul
 
         var role = new Role();
 
-        foreach (var id in request.PermissionIds!)
-            role.RolePermissions.Add(new RolePermission { PermissionId = id });
+        // foreach (var id in request.PermissionIds!)
+        //     role.RolePermissions.Add(new RolePermission { PermissionId = id });
 
         role.Code = request.Code!;
         role.Name = request.Name!;
