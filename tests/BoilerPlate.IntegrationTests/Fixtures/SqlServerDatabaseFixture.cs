@@ -24,7 +24,7 @@ public class SqlServerDatabaseFixture : IDisposable
         DbContext = _db;
 
         var appInit =
-            new ApplicationInitializer(DbContext, new PasswordHasher<User>(), new ClockBuilder().Build().Object);
+            new DomainInitializer(DbContext, new PasswordHasher<User>(), new ClockBuilder().Build().Object);
         appInit.ExecuteAsync(CancellationToken.None).GetAwaiter().GetResult();
     }
 

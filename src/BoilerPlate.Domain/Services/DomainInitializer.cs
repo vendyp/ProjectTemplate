@@ -7,13 +7,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BoilerPlate.Domain.Services;
 
-public class ApplicationInitializer : IInitializer
+public class DomainInitializer : IInitializer
 {
     private readonly IDbContext _dbContext;
     private readonly IPasswordHasher<User> _passwordHasher;
     private readonly DateTime _now;
 
-    public ApplicationInitializer(IDbContext dbContext, IPasswordHasher<User> passwordHasher, IClock clock)
+    public DomainInitializer(IDbContext dbContext, IPasswordHasher<User> passwordHasher, IClock clock)
     {
         _dbContext = dbContext;
         _passwordHasher = passwordHasher;

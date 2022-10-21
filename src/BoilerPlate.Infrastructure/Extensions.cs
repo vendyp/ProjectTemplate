@@ -20,6 +20,6 @@ public static class Extensions
         services.AddScoped<IRoleService, RoleService>();
         services.AddScoped<IPermissionService, PermissionService>();
         services.AddSqlServer2();
-        services.AddInitializer<ApplicationInitializer>();
+        services.AddInitializer<DomainInitializer>();
     }
 }
