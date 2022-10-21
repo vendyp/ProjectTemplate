@@ -15,11 +15,17 @@ public static class Extensions
     private const string AccessTokenCookieName = "__access-token";
     private const string AuthorizationHeader = "authorization";
 
+    public static void AddRequirement<T>(this IServiceCollection services) where T : class, IRequirement
+    {
+        services.AddSingleton<IRequirement, T>();
+    }
+
     public static void AddAuth(this IServiceCollection services,
         Action<JwtBearerOptions>? optionsFactory)
     {
         var options = services.GetOptions<AuthOptions>("auth");
         services.AddSingleton<IAuthManager, AuthManager>();
+        services.AddSingleton<RequirementManager>();
 
         if (options.AuthenticationDisabled)
         {
@@ -101,11 +107,11 @@ public static class Extensions
                         var idd = context.Principal!.Claims.First(e => e.Type == "idd");
 
                         var userIdentifier = requestStorage.Get<UserIdentifier>($"{userId.Value}{idt.Value}");
-                        if (userIdentifier is null)
-                            context.Fail("Invalid");
+                        if (userIdentifier is null) context.Fail("Invalid");
 
-                        if (idd.Value != userIdentifier!.TokenId)
-                            context.Fail("Invalid");
+                        if (userIdentifier is null) return Task.CompletedTask;
+
+                        if (idd.Value != userIdentifier!.TokenId) context.Fail("Invalid");
 
                         return Task.CompletedTask;
                     }
@@ -118,11 +124,15 @@ public static class Extensions
         if (options.Cookie is not null)
             services.AddSingleton(options.Cookie);
         services.AddSingleton(tokenValidationParameters);
+
+        using var serviceProvider = services.BuildServiceProvider();
+        var requirementManager = serviceProvider.GetRequiredService<RequirementManager>();
+        requirementManager.Populate();
         services.AddAuthorization(authorization =>
         {
-            if (options.Policies is null) return;
-            foreach (var policy in options.Policies)
-                authorization.AddPolicy(policy, x => x.RequireClaim("permissions", policy));
+            if (!requirementManager.Requirements.Any()) return;
+            foreach (var policy in requirementManager.Requirements)
+                authorization.AddPolicy(policy.Key, x => x.RequireClaim("permissions", policy.Value));
         });
     }
 

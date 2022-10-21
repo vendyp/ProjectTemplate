@@ -1,4 +1,6 @@
-﻿namespace BoilerPlate.Core.UserManagement;
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace BoilerPlate.Core.UserManagement;
 
 public class UserManagementInitializer : IInitializer
 {
@@ -11,6 +13,11 @@ public class UserManagementInitializer : IInitializer
 
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
+        var dbSet = _dbContext.Set<Module>();
+
+        if (await dbSet.AnyAsync(e => e.Code == UserManagementConstant.ModuleName, cancellationToken))
+            return;
+
         var userManagementModule = new Module
         {
             Code = UserManagementConstant.ModuleName,
@@ -26,7 +33,7 @@ public class UserManagementInitializer : IInitializer
 
         userManagementModule.Permissions.Add(new Permission
         {
-            Code = UserManagementConstant.PermissionReadWrite,
+            Code = UserManagementConstant.PermissionWrite,
             Description = "Permission to read/write"
         });
 
@@ -36,7 +43,7 @@ public class UserManagementInitializer : IInitializer
             Description = "Permission to delete"
         });
 
-        _dbContext.Set<Module>().Add(userManagementModule);
+        dbSet.Add(userManagementModule);
         await _dbContext.SaveChangesAsync(cancellationToken);
     }
 }

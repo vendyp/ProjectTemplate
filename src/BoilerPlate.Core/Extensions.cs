@@ -1,7 +1,6 @@
 ﻿using System.Reflection;
 using BoilerPlate.Core.Behaviours;
 using BoilerPlate.Core.UserManagement;
-using BoilerPlate.Shared.Infrastructure.Services;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,11 +24,11 @@ public static class Extensions
 
     public static void AddCore(this IServiceCollection services)
     {
-        services.AddInitializer<UserManagementInitializer>();
-        
         services.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
         services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
         services.AddMediatR(Assembly.GetExecutingAssembly());
         services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+
+        services.AddUserManagement();
     }
 }

@@ -18,19 +18,21 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseLogging();
 
-// Add services to the container.
+// begin services to the container.
 builder.Services.AddSharedInfrastructure();
 builder.Services.AddInfrastructure();
 builder.Services.AddDefaultJsonSerialization();
 builder.Services.AddClock();
 builder.Services.AddMemoryRequestStorage();
-builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-builder.Services.AddAuth(_ => { });
 builder.Services.AddContext();
 builder.Services.AddApplicationInitializer();
 builder.Services.AddLogging();
-builder.Services.AddSwaggerGen2();
 builder.Services.AddSecurity();
+// end services to the container.
+
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+builder.Services.AddAuth(_ => { });
+builder.Services.AddSwaggerGen2();
 builder.Services.AddControllers(options =>
     {
         options.Conventions.Add(new RouteTokenTransformerConvention(new SlugifyParameterTransformer()));
@@ -41,7 +43,6 @@ builder.Services.AddControllers(options =>
         options.JsonSerializerOptions.Converters.Add(new DateOnlyConverter());
         options.JsonSerializerOptions.Converters.Add(new TimeOnlyConverter());
     });
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
