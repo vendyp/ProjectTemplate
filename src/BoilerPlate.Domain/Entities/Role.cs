@@ -16,6 +16,7 @@ public class Role : BaseEntity
     public Role()
     {
         RoleId = Guid.NewGuid();
+        RoleModules = new HashSet<RoleModule>();
     }
 
     /// <summary>
@@ -37,6 +38,8 @@ public class Role : BaseEntity
     /// Upper case of role name
     /// </summary>
     public string NormalizedName { get; set; } = default!;
+
+    public ICollection<RoleModule> RoleModules { get; set; }
 }
 
 public sealed class RoleConfiguration : BaseEntityConfiguration<Role>
