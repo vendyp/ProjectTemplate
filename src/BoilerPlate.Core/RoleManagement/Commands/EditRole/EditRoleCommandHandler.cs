@@ -15,7 +15,7 @@ public class EditRoleCommandHandler : ICommandHandler<EditRoleCommand, Result>
     {
         var role = await _roleService.GetRoleByRoleIdAsync(request.RoleId, cancellationToken);
         if (role is null)
-            return Result.Failure(ValidationErrors.RoleManagementErrors.RoleNotFound);
+            return Result.Failure(RoleManagementErrors.RoleNotFound);
 
         if (request.Name.IsNotNullOrWhiteSpace())
             if (role.Name != request.Name!)

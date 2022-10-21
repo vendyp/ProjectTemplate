@@ -18,12 +18,12 @@ public class CreateRoleCommandHandler : ICommandHandler<CreateRoleCommand, Resul
     {
         var currentRole = await _roleService.GetRoleByCodeAsync(request.Code!, cancellationToken);
         if (currentRole is not null)
-            return Result.Failure(ValidationErrors.RoleManagementErrors.RoleCodeAlreadyRegistered);
+            return Result.Failure(RoleManagementErrors.RoleCodeAlreadyRegistered);
 
         var checkPermissions =
             await _permissionService.AllIdIsValidAsync(request.PermissionIds!.ToArray(), cancellationToken);
         if (checkPermissions)
-            return Result.Failure(ValidationErrors.RoleManagementErrors.RoleCodeAlreadyRegistered);
+            return Result.Failure(RoleManagementErrors.RoleCodeAlreadyRegistered);
 
         var role = new Role();
 

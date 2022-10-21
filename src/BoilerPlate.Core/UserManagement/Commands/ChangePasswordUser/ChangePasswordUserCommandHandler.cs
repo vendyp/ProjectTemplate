@@ -20,7 +20,7 @@ public class ChangePasswordUserCommandHandler : ICommandHandler<ChangePasswordUs
     {
         var user = await _userService.GetUserByIdAsync(request.UserId, cancellationToken);
         if (user is null)
-            return Result.Failure(ValidationErrors.UserManagementErrors.UserNotFoundInChangePassword);
+            return Result.Failure(UserManagementErrors.UserNotFoundInChangePassword);
 
         user.Password = _passwordHasher.HashPassword(null!, request.NewPassword);
 

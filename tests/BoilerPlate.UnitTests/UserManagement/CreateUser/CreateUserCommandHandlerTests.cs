@@ -31,7 +31,7 @@ public class CreateUserCommandHandlerTests
         var result = await ctr.Handle(command, CancellationToken.None);
 
         result.IsFailure.ShouldBeTrue();
-        result.Error.Code.ShouldBe(ValidationErrors.UserManagementErrors.UserAlreadyRegistered);
+        result.Error.Code.ShouldBe(UserManagementErrors.UserAlreadyRegistered);
     }
 
     /// <summary>

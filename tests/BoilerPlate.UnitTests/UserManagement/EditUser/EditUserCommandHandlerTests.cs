@@ -17,6 +17,6 @@ public class EditUserCommandHandlerTests
         var result = await handler.Handle(new EditUserCommand() { UserId = Guid.NewGuid() }, CancellationToken.None);
 
         result.IsFailure.ShouldBeTrue();
-        result.Error.Code.ShouldBe(ValidationErrors.UserManagementErrors.UserNotFound.Code);
+        result.Error.Code.ShouldBe(UserManagementErrors.UserNotFound.Code);
     }
 }

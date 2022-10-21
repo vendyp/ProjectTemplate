@@ -15,7 +15,7 @@ public class EditUserCommandHandler : ICommandHandler<EditUserCommand, Result>
     {
         var user = await _userService.GetUserByIdAsync(request.UserId, cancellationToken);
         if (user is null)
-            return Result.Failure(ValidationErrors.UserManagementErrors.UserNotFound);
+            return Result.Failure(UserManagementErrors.UserNotFound);
 
         if (request.FullName.IsNotNullOrWhiteSpace())
             if (user.FullName != request.FullName)
