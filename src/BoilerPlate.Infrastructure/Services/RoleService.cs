@@ -14,20 +14,30 @@ internal class RoleService : IRoleService
         _roles = dbContext.Set<Role>();
     }
 
+    public IQueryable<Role> GetBaseQuery()
+    {
+        return _roles.Include(e => e.RoleModules)
+            .ThenInclude(e => e.RoleModuleChildren)
+            .ThenInclude(e => e.RoleModuleGivenPermissions)
+            .Include(e => e.RoleModules)
+            .ThenInclude(e => e.RoleModuleGivenPermissions)
+            .AsQueryable();
+    }
+
     public Task<Role?> GetRoleOfAdministratorAsync(CancellationToken cancellationToken)
     {
         var id = new Guid(Role.DefaultRoleAdminId);
-        return _roles.Where(e => e.RoleId == id).FirstOrDefaultAsync(cancellationToken);
+        return GetBaseQuery().Where(e => e.RoleId == id).FirstOrDefaultAsync(cancellationToken);
     }
 
     public Task<Role?> GetRoleOfUserAsync(CancellationToken cancellationToken)
     {
         var id = new Guid(Role.DefaultRoleUserId);
-        return _roles.Where(e => e.RoleId == id).FirstOrDefaultAsync(cancellationToken);
+        return GetBaseQuery().Where(e => e.RoleId == id).FirstOrDefaultAsync(cancellationToken);
     }
 
     public Task<Role?> GetRoleByRoleIdAsync(Guid roleId, CancellationToken cancellationToken)
-        => _roles.Where(e => e.RoleId == roleId).FirstOrDefaultAsync(cancellationToken);
+        => GetBaseQuery().Where(e => e.RoleId == roleId).FirstOrDefaultAsync(cancellationToken);
 
     public Task<Role?> GetRoleByCodeAsync(string code, CancellationToken cancellationToken)
         => _roles.Where(e => e.Code == code).FirstOrDefaultAsync(cancellationToken);
