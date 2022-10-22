@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using BoilerPlate.Domain;
+﻿using BoilerPlate.Domain;
 using BoilerPlate.Shared.Abstraction.Contexts;
 using BoilerPlate.Shared.Abstraction.Databases;
 using BoilerPlate.Shared.Abstraction.Entities;
@@ -87,6 +86,17 @@ public sealed class PostgresDbContext : DbContext, IDbContext
 
                     entry.Entity.LastUpdatedAt = _clock.CurrentDate();
                     entry.Entity.LastUpdatedAtServer = _clock.CurrentServerDate();
+
+                    if (entry.Entity.DeletedByAt.HasValue)
+                    {
+                        entry.Entity.DeletedByAtServer = _clock.CurrentServerDate();
+                        if (contextExist)
+                        {
+                            entry.Entity.DeletedBy = _context!.Identity.Id.ToString();
+                            entry.Entity.DeletedByName = _context.Identity.Username;
+                        }
+                    }
+
                     break;
                 case EntityState.Detached:
                     break;
