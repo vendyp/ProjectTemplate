@@ -1,9 +1,11 @@
-﻿using BoilerPlate.Core.Contracts;
+﻿using BoilerPlate.Core.Abstractions;
+using BoilerPlate.Core.Contracts;
 using BoilerPlate.Core.UserManagement;
 using BoilerPlate.Core.UserManagement.Commands.ChangePasswordUser;
 using BoilerPlate.Core.UserManagement.Commands.CreateUser;
 using BoilerPlate.Core.UserManagement.Commands.EditUser;
 using BoilerPlate.Core.UserManagement.Queries.GetUsers;
+using BoilerPlate.Shared.Abstraction.Models;
 using BoilerPlate.Shared.Abstraction.Queries;
 using BoilerPlate.Shared.Infrastructure.Primitives;
 using Microsoft.AspNetCore.Authorization;
@@ -13,6 +15,26 @@ namespace BoilerPlate.Api.Controllers;
 [Authorize(Policy = UserManagementConstant.PermissionRead)]
 public sealed class UserManagementController : BaseController
 {
+    private readonly IRoleService _roleService;
+
+    public UserManagementController(IRoleService roleService)
+    {
+        _roleService = roleService;
+    }
+
+    /// <summary>
+    /// Get Roles API
+    /// </summary>
+    /// <param name="search">Search by Role Name</param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    [HttpGet("roles")]
+    [ProducesResponseType(typeof(List<DropdownKeyValue>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> GetRolesAsync([FromQuery] string search, CancellationToken cancellationToken)
+        => Ok((await _roleService.GetAvailableRoles(search, cancellationToken))
+            .Select(e => new DropdownKeyValue(e.RoleId.ToString(), e.Name)).ToList());
+
     /// <summary>
     /// Create User API
     /// </summary>
