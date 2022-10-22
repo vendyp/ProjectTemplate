@@ -4,14 +4,11 @@ public class CreateRoleCommandHandler : ICommandHandler<CreateRoleCommand, Resul
 {
     private readonly IDbContext _dbContext;
     private readonly IRoleService _roleService;
-    private readonly IPermissionService _permissionService;
 
-    public CreateRoleCommandHandler(IDbContext dbContext, IRoleService roleService,
-        IPermissionService permissionService)
+    public CreateRoleCommandHandler(IDbContext dbContext, IRoleService roleService)
     {
         _dbContext = dbContext;
         _roleService = roleService;
-        _permissionService = permissionService;
     }
 
     public async Task<Result> Handle(CreateRoleCommand request, CancellationToken cancellationToken)
@@ -20,18 +17,11 @@ public class CreateRoleCommandHandler : ICommandHandler<CreateRoleCommand, Resul
         if (currentRole is not null)
             return Result.Failure(RoleManagementErrors.RoleCodeAlreadyRegistered);
 
-        var checkPermissions =
-            await _permissionService.AllIdIsValidAsync(request.PermissionIds!.ToArray(), cancellationToken);
-        if (checkPermissions)
-            return Result.Failure(RoleManagementErrors.RoleCodeAlreadyRegistered);
-
-        var role = new Role();
-
-        // foreach (var id in request.PermissionIds!)
-        //     role.RolePermissions.Add(new RolePermission { PermissionId = id });
-
-        role.Code = request.Code!;
-        role.Name = request.Name!;
+        var role = new Role
+        {
+            Code = request.Code!,
+            Name = request.Name!
+        };
         role.NormalizedName = role.Name.ToUpperInvariant();
 
         _dbContext.Insert(role);
