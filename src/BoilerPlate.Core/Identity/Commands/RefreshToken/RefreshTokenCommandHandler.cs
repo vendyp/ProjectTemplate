@@ -13,15 +13,20 @@ public class RefreshTokenCommandHandler : ICommandHandler<RefreshTokenCommand, R
     private readonly AuthOptions _authOptions;
     private readonly IRequestStorage _requestStorage;
     private readonly IAuthManager _authManager;
+    private readonly IPermissionService _permissionService;
+    private readonly IUserService _userService;
 
     public RefreshTokenCommandHandler(IDbContext dbContext, IClock clock, AuthOptions authOptions,
-        IRequestStorage requestStorage, IAuthManager authManager)
+        IRequestStorage requestStorage, IAuthManager authManager, IPermissionService permissionService,
+        IUserService userService)
     {
         _dbContext = dbContext;
         _clock = clock;
         _authOptions = authOptions;
         _requestStorage = requestStorage;
         _authManager = authManager;
+        _permissionService = permissionService;
+        _userService = userService;
     }
 
     public async Task<Result<JsonWebToken>> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)
@@ -47,20 +52,24 @@ public class RefreshTokenCommandHandler : ICommandHandler<RefreshTokenCommand, R
         _dbContext.Set<UserToken>().Add(newUserToken);
         await _dbContext.SaveChangesAsync(cancellationToken);
 
+        var user = (await _userService.GetUserByUsernameFullAsync(userToken.User!.Username, cancellationToken))!;
+
         _requestStorage.Set($"{userToken.UserId}{request.ClientId}",
             new UserIdentifier
             {
-                UserId = userToken.User!.UserId, IdentifierId = refreshToken,
-                LastChangePassword = userToken.User!.LastPasswordChangeAt!.Value,
+                UserId = user.UserId, IdentifierId = refreshToken,
+                LastChangePassword = user.LastPasswordChangeAt!.Value,
                 TokenId = newUserToken.UserTokenId.ToString()
             }, _authOptions.Expiry);
 
-        var claims = Extensions.GenerateCustomClaims(userToken.User!, userToken.DeviceType);
+        var claims = Extensions.GenerateCustomClaims(user, userToken.DeviceType,
+            await _permissionService.GetAllPermissionCodeAsync(cancellationToken));
 
-        var jwt = _authManager.CreateToken(userToken.User.UserId, request.ClientId, refreshToken,
+        var jwt = _authManager.CreateToken(user.UserId, request.ClientId, refreshToken,
             newUserToken.UserTokenId.ToString(), role: null,
             audience: null,
             claims: claims);
+
         //jwt claims clear, for result only
         jwt.Claims.Clear();
 

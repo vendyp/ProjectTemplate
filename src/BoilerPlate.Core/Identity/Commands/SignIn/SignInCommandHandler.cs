@@ -13,9 +13,10 @@ public sealed class SignInCommandHandler : ICommandHandler<SignInCommand, Result
     private readonly AuthOptions _authOptions;
     private readonly IAuthManager _authManager;
     private readonly IRequestStorage _requestStorage;
+    private readonly IPermissionService _permissionService;
 
     public SignInCommandHandler(IUserService userService, IDbContext dbContext, IClock clock, AuthOptions authOptions,
-        IAuthManager authManager, IRequestStorage requestStorage)
+        IAuthManager authManager, IRequestStorage requestStorage, IPermissionService permissionService)
     {
         _userService = userService;
         _dbContext = dbContext;
@@ -23,11 +24,12 @@ public sealed class SignInCommandHandler : ICommandHandler<SignInCommand, Result
         _authOptions = authOptions;
         _authManager = authManager;
         _requestStorage = requestStorage;
+        _permissionService = permissionService;
     }
 
     public async Task<Result<JsonWebToken>> Handle(SignInCommand request, CancellationToken cancellationToken)
     {
-        var user = await _userService.GetUserByUsernameAsync(request.Username, cancellationToken);
+        var user = await _userService.GetUserByUsernameFullAsync(request.Username, cancellationToken);
         if (user?.Password is null)
             return Result.Failure<JsonWebToken>(IdentityErrors.InvalidUsernameAndPassword);
 
@@ -56,11 +58,12 @@ public sealed class SignInCommandHandler : ICommandHandler<SignInCommand, Result
                 LastChangePassword = user.LastPasswordChangeAt!.Value, TokenId = newUserToken.UserTokenId.ToString()
             }, _authOptions.Expiry);
 
-        var claims = Extensions.GenerateCustomClaims(user, request.GetDeviceType());
+        var claims = Extensions.GenerateCustomClaims(user, request.GetDeviceType(), await _permissionService.GetAllPermissionCodeAsync(cancellationToken));
 
         var jwt = _authManager.CreateToken(user.UserId, request.ClientId, refreshToken,
             newUserToken.UserTokenId.ToString(), role: null, audience: null,
             claims: claims);
+
         //jwt claims clear, for result only
         jwt.Claims.Clear();
 
