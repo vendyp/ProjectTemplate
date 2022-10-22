@@ -17,4 +17,6 @@ public interface IPermissionService
     /// <param name="cancellationToken">A <see cref="CancellationToken" /> to observe while waiting for the task to complete</param>
     /// <returns></returns>
     Task<bool> AllIdIsValidAsync(string[] ids, CancellationToken cancellationToken);
+
+    Task<List<string>> GetAllPermissionCodeAsync(CancellationToken cancellationToken);
 }

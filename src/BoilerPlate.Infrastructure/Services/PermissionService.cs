@@ -28,4 +28,7 @@ internal class PermissionService : IPermissionService
 
         return listPermission.Count == listId.Count;
     }
+
+    public Task<List<string>> GetAllPermissionCodeAsync(CancellationToken cancellationToken)
+        => _dbContext.Set<Permission>().Select(e => e.Code).ToListAsync(cancellationToken);
 }
