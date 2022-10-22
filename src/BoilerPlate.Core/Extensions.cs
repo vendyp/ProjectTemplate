@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using BoilerPlate.Core.Behaviours;
+using BoilerPlate.Core.RoleManagement;
 using BoilerPlate.Core.UserManagement;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -30,5 +31,6 @@ public static class Extensions
         services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
         services.AddUserManagement();
+        services.AddRoleManagement();
     }
 }
