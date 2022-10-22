@@ -1,6 +1,8 @@
 ﻿using BoilerPlate.Core.Abstractions;
 using BoilerPlate.Domain.Entities;
 using BoilerPlate.Shared.Abstraction.Databases;
+using BoilerPlate.Shared.Abstraction.Models;
+using BoilerPlate.Shared.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
 namespace BoilerPlate.Infrastructure.Services;
@@ -41,4 +43,19 @@ internal class RoleService : IRoleService
 
     public Task<Role?> GetRoleByCodeAsync(string code, CancellationToken cancellationToken)
         => _roles.Where(e => e.Code == code).FirstOrDefaultAsync(cancellationToken);
+
+    public Task<List<Role>> GetAvailableRoles(string searchName, CancellationToken cancellationToken)
+    {
+        var query = _roles.Where(e => e.Code != Role.DefaultRoleAdminCode)
+            .AsNoTracking()
+            .Take(25)
+            .AsQueryable();
+
+        if (!searchName.IsNotNullOrWhiteSpace()) return query.ToListAsync(cancellationToken);
+
+        searchName = searchName.ToUpperInvariant();
+        query = query.Where(e => EF.Functions.Like(e.NormalizedName, $"%{searchName}%"));
+
+        return query.ToListAsync(cancellationToken);
+    }
 }
