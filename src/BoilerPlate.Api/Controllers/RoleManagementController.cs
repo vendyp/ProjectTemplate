@@ -19,7 +19,7 @@ public sealed class RoleManagementController : BaseController
     [Authorize(Policy = RoleManagementConstant.PermissionWrite)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
-    public Task<IActionResult> CreateUserAsync([FromBody] CreateRoleCommand command,
+    public Task<IActionResult> CreateRoleAsync([FromBody] CreateRoleCommand command,
         CancellationToken cancellationToken)
         => Result.Success(command)
             .Bind(x => Sender.Send(x, cancellationToken))
@@ -35,7 +35,7 @@ public sealed class RoleManagementController : BaseController
     [Authorize(Policy = RoleManagementConstant.PermissionWrite)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
-    public Task<IActionResult> EditUserAsync([FromBody] EditRoleCommand command, CancellationToken cancellationToken)
+    public Task<IActionResult> EditRoleAsync([FromBody] EditRoleCommand command, CancellationToken cancellationToken)
         => Result.Success(command).Bind(e => Sender.Send(e, cancellationToken))
             .Match(Ok, BadRequest);
 }

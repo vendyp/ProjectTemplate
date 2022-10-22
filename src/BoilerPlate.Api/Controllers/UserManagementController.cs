@@ -70,7 +70,7 @@ public sealed class UserManagementController : BaseController
     [HttpGet("users")]
     [ProducesResponseType(typeof(PagedList<UserResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetRaceStatus(
+    public async Task<IActionResult> GetUsersAsync(
         string? username,
         string? fullName,
         int page,
