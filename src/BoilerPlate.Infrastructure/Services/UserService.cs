@@ -36,6 +36,26 @@ internal class UserService : IUserService
             .FirstOrDefaultAsync(cancellationToken);
     }
 
+    public Task<User?> GetUserByUsernameFullAsync(string username, CancellationToken cancellationToken)
+    {
+        username = username.ToUpperInvariant();
+
+        return GetBaseQuery()
+            .Include(e => e.UserRoles)
+            .ThenInclude(e => e.Role)
+            .ThenInclude(e => e!.RoleModules)
+            .ThenInclude(e => e.RoleModuleGivenPermissions)
+            .ThenInclude(e => e.Permission)
+            .Include(e => e.UserRoles)
+            .ThenInclude(e => e.Role)
+            .ThenInclude(e => e!.RoleModules)
+            .ThenInclude(e => e.RoleModuleChildren)
+            .ThenInclude(e => e.RoleModuleGivenPermissions)
+            .ThenInclude(e => e.Permission)
+            .Where(e => e.NormalizedUsername == username)
+            .FirstOrDefaultAsync(cancellationToken);
+    }
+
     public bool VerifyPassword(string currentPassword, string password)
         => _passwordHasher?.VerifyHashedPassword(default!, currentPassword, password) ==
            PasswordVerificationResult.Success;
