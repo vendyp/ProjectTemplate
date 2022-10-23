@@ -4,6 +4,7 @@ using BoilerPlate.Core.UserManagement;
 using BoilerPlate.Core.UserManagement.Commands.ChangePasswordUser;
 using BoilerPlate.Core.UserManagement.Commands.CreateUser;
 using BoilerPlate.Core.UserManagement.Commands.EditUser;
+using BoilerPlate.Core.UserManagement.Queries.GetUserById;
 using BoilerPlate.Core.UserManagement.Queries.GetUsers;
 using BoilerPlate.Shared.Abstraction.Models;
 using BoilerPlate.Shared.Abstraction.Queries;
@@ -99,4 +100,18 @@ public sealed class UserManagementController : BaseController
         int pageSize,
         string orderBy) =>
         Ok(await Sender.Send(new GetUsersQuery(page, pageSize, orderBy, fullName, username)));
+
+    /// <summary>
+    /// Get User by Id API
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    [HttpGet("users/{id:Guid}")]
+    [ProducesResponseType(typeof(PagedList<UserResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public Task<IActionResult> GetUserByIdAsync(
+        [FromRoute] Guid id) =>
+        Maybe<GetUserByIdQuery>.From(new GetUserByIdQuery { UserId = id })
+            .Bind(query => Sender.Send(query))
+            .Match(Ok, NotFound);
 }
