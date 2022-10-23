@@ -17,7 +17,7 @@ public sealed class Maybe<T> : IEquatable<Maybe<T>>
     /// <summary>
     /// Gets the default instance.
     /// </summary>
-    public static Maybe<T?> None => new Maybe<T?>(default);
+    public static Maybe<T> None => new(default!);
 
     /// <summary>
     /// Gets a value indicating whether or not the value exists.
