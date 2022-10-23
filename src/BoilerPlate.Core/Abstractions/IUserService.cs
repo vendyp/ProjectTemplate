@@ -13,6 +13,14 @@ public interface IUserService
     /// <returns></returns>
     Task<User?> GetUserByUsernameFullAsync(string username, CancellationToken cancellationToken);
 
+    /// <summary>
+    /// Get user by user id, full meaning to gets deep into role, role modules, its children and permissions
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    Task<User?> GetUserByUserIdFullAsync(Guid userId, CancellationToken cancellationToken);
+
     bool VerifyPassword(string currentPassword, string password);
     string HashPassword(string password);
 }

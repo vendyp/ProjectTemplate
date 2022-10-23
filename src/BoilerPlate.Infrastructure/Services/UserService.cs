@@ -56,6 +56,22 @@ internal class UserService : IUserService
             .FirstOrDefaultAsync(cancellationToken);
     }
 
+    public Task<User?> GetUserByUserIdFullAsync(Guid userId, CancellationToken cancellationToken)
+        => GetBaseQuery()
+            .Include(e => e.UserRoles)
+            .ThenInclude(e => e.Role)
+            .ThenInclude(e => e!.RoleModules)
+            .ThenInclude(e => e.RoleModuleGivenPermissions)
+            .ThenInclude(e => e.Permission)
+            .Include(e => e.UserRoles)
+            .ThenInclude(e => e.Role)
+            .ThenInclude(e => e!.RoleModules)
+            .ThenInclude(e => e.RoleModuleChildren)
+            .ThenInclude(e => e.RoleModuleGivenPermissions)
+            .ThenInclude(e => e.Permission)
+            .Where(e => e.UserId == userId)
+            .FirstOrDefaultAsync(cancellationToken);
+
     public bool VerifyPassword(string currentPassword, string password)
         => _passwordHasher?.VerifyHashedPassword(default!, currentPassword, password) ==
            PasswordVerificationResult.Success;
