@@ -87,9 +87,11 @@ public sealed class PostgresDbContext : DbContext, IDbContext
                     entry.Entity.LastUpdatedAt = _clock.CurrentDate();
                     entry.Entity.LastUpdatedAtServer = _clock.CurrentServerDate();
 
-                    if (entry.Entity.DeletedByAt.HasValue)
+                    if (entry.Entity.DeletedByAt.HasValue || entry.Entity.DeletedByAtServer.HasValue)
                     {
-                        entry.Entity.DeletedByAtServer = _clock.CurrentServerDate();
+                        entry.Entity.DeletedByAt ??= _clock.CurrentDate();
+                        entry.Entity.DeletedByAtServer ??= _clock.CurrentServerDate();
+
                         if (contextExist)
                         {
                             entry.Entity.DeletedBy = _context!.Identity.Id.ToString();
