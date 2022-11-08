@@ -16,7 +16,6 @@ public sealed class SignInCommandHandler : ICommandHandler<SignInCommand, Result
         var dbContext = scope.ServiceProvider.GetRequiredService<IDbContext>();
         var authOptions = scope.ServiceProvider.GetRequiredService<AuthOptions>();
         var requestStorage = scope.ServiceProvider.GetRequiredService<IRequestStorage>();
-        var permissionService = scope.ServiceProvider.GetRequiredService<IPermissionService>();
         var authManager = scope.ServiceProvider.GetRequiredService<IAuthManager>();
 
         var user = await userService.GetUserByUsernameFullAsync(request.Username, cancellationToken);
@@ -48,8 +47,7 @@ public sealed class SignInCommandHandler : ICommandHandler<SignInCommand, Result
                 LastChangePassword = user.LastPasswordChangeAt!.Value, TokenId = newUserToken.UserTokenId.ToString()
             }, authOptions.Expiry);
 
-        var claims = Extensions.GenerateCustomClaims(user, request.GetDeviceType(),
-            await permissionService.GetAllPermissionCodeAsync(cancellationToken));
+        var claims = Extensions.GenerateCustomClaims(user, request.GetDeviceType());
 
         var jwt = authManager.CreateToken(user.UserId, request.ClientId, refreshToken,
             newUserToken.UserTokenId.ToString(), role: null, audience: null,

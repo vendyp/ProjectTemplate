@@ -22,49 +22,9 @@ public class DomainInitializer : IInitializer
 
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
-        await AddRoleUserAsync(cancellationToken);
-
-        await AddRoleAdminAsync(cancellationToken);
-
         await AddUserAdminAsync(cancellationToken);
 
         await _dbContext.SaveChangesAsync(cancellationToken);
-    }
-
-    private async Task AddRoleAdminAsync(CancellationToken cancellationToken)
-    {
-        var roleAdminId = new Guid(Role.DefaultRoleAdminId);
-        if (await _dbContext.Set<Role>().AnyAsync(e => e.RoleId == roleAdminId, cancellationToken: cancellationToken))
-            return;
-
-        await _dbContext.Set<Role>().AddAsync(new Role
-        {
-            CreatedBy = null,
-            CreatedByName = "system",
-            CreatedAt = _now,
-            RoleId = roleAdminId,
-            Code = Role.DefaultRoleAdminCode,
-            Name = Role.DefaultRoleUserAdminName,
-            NormalizedName = Role.DefaultRoleUserAdminName.ToUpper(),
-        }, cancellationToken);
-    }
-
-    private async Task AddRoleUserAsync(CancellationToken cancellationToken)
-    {
-        var roleUserId = new Guid(Role.DefaultRoleUserId);
-        if (await _dbContext.Set<Role>().AnyAsync(e => e.RoleId == roleUserId, cancellationToken))
-            return;
-
-        await _dbContext.Set<Role>().AddAsync(new Role
-        {
-            CreatedBy = null,
-            CreatedByName = "system",
-            CreatedAt = _now,
-            RoleId = roleUserId,
-            Code = Role.DefaultRoleUserCode,
-            Name = Role.DefaultRoleUserName,
-            NormalizedName = Role.DefaultRoleUserName.ToUpper(),
-        }, cancellationToken);
     }
 
     private async Task AddUserAdminAsync(CancellationToken cancellationToken)
@@ -88,7 +48,7 @@ public class DomainInitializer : IInitializer
         await _dbContext.Set<UserRole>().AddAsync(new UserRole
         {
             UserId = Guid.Empty,
-            RoleId = new Guid(Role.DefaultRoleAdminId)
+            RoleId = RoleConstant.Administrator
         }, cancellationToken);
     }
 }

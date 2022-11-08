@@ -23,8 +23,7 @@ internal class UserService : IUserService
     }
 
     public IQueryable<User> GetBaseQuery()
-        => _dbContext.Set<User>().Include(e => e.UserRoles)
-            .ThenInclude(e => e.Role).AsQueryable();
+        => _dbContext.Set<User>().Include(e => e.UserRoles).AsQueryable();
 
     public Task<User?> GetUserByIdAsync(Guid userId, CancellationToken cancellationToken)
         => GetBaseQuery().Where(e => e.UserId == userId).FirstOrDefaultAsync(cancellationToken);
@@ -42,16 +41,6 @@ internal class UserService : IUserService
 
         return GetBaseQuery()
             .Include(e => e.UserRoles)
-            .ThenInclude(e => e.Role)
-            .ThenInclude(e => e!.RoleModules)
-            .ThenInclude(e => e.RoleModuleGivenPermissions)
-            .ThenInclude(e => e.Permission)
-            .Include(e => e.UserRoles)
-            .ThenInclude(e => e.Role)
-            .ThenInclude(e => e!.RoleModules)
-            .ThenInclude(e => e.RoleModuleChildren)
-            .ThenInclude(e => e.RoleModuleGivenPermissions)
-            .ThenInclude(e => e.Permission)
             .Where(e => e.NormalizedUsername == username)
             .FirstOrDefaultAsync(cancellationToken);
     }
@@ -59,16 +48,6 @@ internal class UserService : IUserService
     public Task<User?> GetUserByUserIdFullAsync(Guid userId, CancellationToken cancellationToken)
         => GetBaseQuery()
             .Include(e => e.UserRoles)
-            .ThenInclude(e => e.Role)
-            .ThenInclude(e => e!.RoleModules)
-            .ThenInclude(e => e.RoleModuleGivenPermissions)
-            .ThenInclude(e => e.Permission)
-            .Include(e => e.UserRoles)
-            .ThenInclude(e => e.Role)
-            .ThenInclude(e => e!.RoleModules)
-            .ThenInclude(e => e.RoleModuleChildren)
-            .ThenInclude(e => e.RoleModuleGivenPermissions)
-            .ThenInclude(e => e.Permission)
             .Where(e => e.UserId == userId)
             .FirstOrDefaultAsync(cancellationToken);
 

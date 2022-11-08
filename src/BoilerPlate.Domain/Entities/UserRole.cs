@@ -10,14 +10,7 @@ public class UserRole : BaseEntity
     /// </summary>
     public Guid UserId { get; set; }
 
-    public User? User { get; set; }
-
-    /// <summary>
-    /// Primary key of the object
-    /// </summary>
-    public Guid RoleId { get; set; }
-
-    public Role? Role { get; set; }
+    public string RoleId { get; set; } = null!;
 }
 
 public sealed class UserRoleConfiguration : BaseEntityConfiguration<UserRole>

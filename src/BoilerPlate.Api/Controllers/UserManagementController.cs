@@ -1,11 +1,11 @@
-﻿using BoilerPlate.Core.Abstractions;
-using BoilerPlate.Core.Contracts;
+﻿using BoilerPlate.Core.Contracts;
 using BoilerPlate.Core.UserManagement;
 using BoilerPlate.Core.UserManagement.Commands.ChangePasswordUser;
 using BoilerPlate.Core.UserManagement.Commands.CreateUser;
 using BoilerPlate.Core.UserManagement.Commands.EditUser;
 using BoilerPlate.Core.UserManagement.Queries.GetUserById;
 using BoilerPlate.Core.UserManagement.Queries.GetUsers;
+using BoilerPlate.Domain;
 using BoilerPlate.Shared.Abstraction.Models;
 using BoilerPlate.Shared.Abstraction.Queries;
 using Microsoft.AspNetCore.Authorization;
@@ -15,25 +15,16 @@ namespace BoilerPlate.Api.Controllers;
 [Authorize(Policy = UserManagementConstant.PermissionRead)]
 public sealed class UserManagementController : BaseController
 {
-    private readonly IRoleService _roleService;
-
-    public UserManagementController(IRoleService roleService)
-    {
-        _roleService = roleService;
-    }
-
     /// <summary>
     /// Get Roles API
     /// </summary>
-    /// <param name="search">Search by Role Name</param>
-    /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpGet("roles")]
     [ProducesResponseType(typeof(List<DropdownKeyValue>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> GetRolesAsync([FromQuery] string search, CancellationToken cancellationToken)
-        => Ok((await _roleService.GetAvailableRoles(search, cancellationToken))
-            .Select(e => new DropdownKeyValue(e.RoleId.ToString(), e.Name)).ToList());
+    public IActionResult GetRoles()
+        => Ok(RoleConstant.Dictionary
+            .Select(e => new DropdownKeyValue(e.Key, e.Value)).ToList());
 
     /// <summary>
     /// Create User API
@@ -110,6 +101,7 @@ public sealed class UserManagementController : BaseController
     /// Get User by Id API
     /// </summary>
     /// <param name="id"></param>
+    /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpGet("users/{id:Guid}")]
     [ProducesResponseType(typeof(PagedList<UserResponse>), StatusCodes.Status200OK)]
@@ -121,8 +113,4 @@ public sealed class UserManagementController : BaseController
         var result = await Sender.Send(query, cancellationToken);
         return result.HasValue ? Ok(result.Value) : NotFound();
     }
-
-    // Maybe<GetUserByIdQuery>.From(new GetUserByIdQuery { UserId = id })
-    //         .Bind(query => Sender.Send(query))
-    //         .Match(Ok, NotFound);
 }

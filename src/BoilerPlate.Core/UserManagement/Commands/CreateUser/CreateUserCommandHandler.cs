@@ -1,4 +1,5 @@
 ﻿using BoilerPlate.Core.Abstractions;
+using BoilerPlate.Domain;
 using Microsoft.AspNetCore.Identity;
 
 namespace BoilerPlate.Core.UserManagement.Commands.CreateUser;
@@ -17,15 +18,12 @@ public sealed class CreateUserCommandHandler : ICommandHandler<CreateUserCommand
         using var scope = _serviceProvider.CreateScope();
 
         var userService = scope.ServiceProvider.GetRequiredService<IUserService>();
-        var roleService = scope.ServiceProvider.GetRequiredService<IRoleService>();
         var passwordHasher = scope.ServiceProvider.GetRequiredService<IPasswordHasher<User>>();
         var dbContext = scope.ServiceProvider.GetRequiredService<IDbContext>();
 
         var user = await userService.GetUserByUsernameAsync(request.NormalizedUsername, cancellationToken);
         if (user is not null)
             return Result.Failure(UserManagementErrors.UserAlreadyRegistered);
-
-        var roleOfUser = await roleService.GetRoleOfUserAsync(cancellationToken);
 
         user = new User
         {
@@ -34,7 +32,7 @@ public sealed class CreateUserCommandHandler : ICommandHandler<CreateUserCommand
             Password = passwordHasher.HashPassword(default!, request.Password)
         };
 
-        user.UserRoles.Add(new UserRole { RoleId = roleOfUser!.RoleId });
+        user.UserRoles.Add(new UserRole { RoleId = RoleConstant.User });
 
         dbContext.Insert(user);
         await dbContext.SaveChangesAsync(cancellationToken);

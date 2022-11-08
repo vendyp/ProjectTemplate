@@ -1,5 +1,4 @@
-﻿
-using BoilerPlate.Core.Abstractions;
+﻿using BoilerPlate.Core.Abstractions;
 
 namespace BoilerPlate.Core.Identity.Commands.RefreshToken;
 
@@ -18,7 +17,6 @@ public class RefreshTokenCommandHandler : ICommandHandler<RefreshTokenCommand, R
         var dbContext = scope.ServiceProvider.GetRequiredService<IDbContext>();
         var authOptions = scope.ServiceProvider.GetRequiredService<AuthOptions>();
         var requestStorage = scope.ServiceProvider.GetRequiredService<IRequestStorage>();
-        var permissionService = scope.ServiceProvider.GetRequiredService<IPermissionService>();
         var authManager = scope.ServiceProvider.GetRequiredService<IAuthManager>();
 
         var userToken = await dbContext.Set<UserToken>()
@@ -52,8 +50,7 @@ public class RefreshTokenCommandHandler : ICommandHandler<RefreshTokenCommand, R
                 TokenId = newUserToken.UserTokenId.ToString()
             }, authOptions.Expiry);
 
-        var claims = Extensions.GenerateCustomClaims(user, userToken.DeviceType,
-            await permissionService.GetAllPermissionCodeAsync(cancellationToken));
+        var claims = Extensions.GenerateCustomClaims(user, userToken.DeviceType);
 
         var jwt = authManager.CreateToken(user.UserId, request.ClientId, refreshToken,
             newUserToken.UserTokenId.ToString(), role: null,
