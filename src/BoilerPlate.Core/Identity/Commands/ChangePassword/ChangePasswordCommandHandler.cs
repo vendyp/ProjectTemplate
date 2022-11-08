@@ -1,42 +1,36 @@
-﻿using BoilerPlate.Shared.Abstraction.Storage;
-using BoilerPlate.Shared.Abstraction.Time;
-using Microsoft.EntityFrameworkCore;
+﻿using BoilerPlate.Core.Abstractions;
 
 namespace BoilerPlate.Core.Identity.Commands.ChangePassword;
 
 internal sealed class ChangePasswordCommandHandler : ICommandHandler<ChangePasswordCommand, Result>
 {
-    private readonly IUserService _userService;
-    private readonly IDbContext _dbContext;
-    private readonly IClock _clock;
-    private readonly IRequestStorage _requestStorage;
+    private readonly IServiceProvider _serviceProvider;
 
-    public ChangePasswordCommandHandler(IUserService userService, IDbContext dbContext, IClock clock,
-        IRequestStorage requestStorage)
-    {
-        _userService = userService;
-        _dbContext = dbContext;
-        _clock = clock;
-        _requestStorage = requestStorage;
-    }
+    public ChangePasswordCommandHandler(IServiceProvider serviceProvider) => _serviceProvider = serviceProvider;
 
-    public async Task<Result> Handle(ChangePasswordCommand request, CancellationToken cancellationToken)
+    public async ValueTask<Result> Handle(ChangePasswordCommand request, CancellationToken cancellationToken)
     {
-        var user = await _userService.GetUserByIdAsync(request.GetUserId(), cancellationToken);
+        using var scope = _serviceProvider.CreateScope();
+        var userService = scope.ServiceProvider.GetRequiredService<IUserService>();
+        var clock = scope.ServiceProvider.GetRequiredService<IClock>();
+        var dbContext = scope.ServiceProvider.GetRequiredService<IDbContext>();
+        var requestStorage = scope.ServiceProvider.GetRequiredService<IRequestStorage>();
+
+        var user = await userService.GetUserByIdAsync(request.GetUserId(), cancellationToken);
         if (user is null || user.Password is null)
             return Result.Failure(IdentityErrors.UserNotFound);
 
-        if (_userService.VerifyPassword(user.Password!, request.NewPassword))
+        if (userService.VerifyPassword(user.Password!, request.NewPassword))
             return Result.Failure(IdentityErrors.PasswordIsSame);
 
-        user.Password = _userService.HashPassword(request.NewPassword);
-        user.LastPasswordChangeAt = _clock.CurrentDate();
+        user.Password = userService.HashPassword(request.NewPassword);
+        user.LastPasswordChangeAt = clock.CurrentDate();
 
         var listUserIdentity = new List<string>();
 
         if (request.ForceReLogin)
         {
-            var userTokens = await _dbContext.Set<UserToken>().Where(e => e.UserId == user.UserId && e.IsUsed == false)
+            var userTokens = await dbContext.Set<UserToken>().Where(e => e.UserId == user.UserId && e.IsUsed == false)
                 .ToListAsync(cancellationToken);
             foreach (var userToken in userTokens)
             {
@@ -45,12 +39,12 @@ internal sealed class ChangePasswordCommandHandler : ICommandHandler<ChangePassw
             }
         }
 
-        await _dbContext.SaveChangesAsync(cancellationToken);
+        await dbContext.SaveChangesAsync(cancellationToken);
 
         if (!listUserIdentity.Any()) return Result.Success();
 
         foreach (var item in listUserIdentity)
-            _requestStorage.Remove($"{user.UserId}{item}");
+            requestStorage.Remove($"{user.UserId}{item}");
 
         return Result.Success();
     }

@@ -1,6 +1,4 @@
-﻿using BoilerPlate.Shared.Abstraction.Auth;
-
-namespace BoilerPlate.Core.Identity.Commands.RefreshToken;
+﻿namespace BoilerPlate.Core.Identity.Commands.RefreshToken;
 
 public sealed class RefreshTokenCommand : ICommand<Result<JsonWebToken>>
 {

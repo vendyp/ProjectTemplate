@@ -1,7 +1,4 @@
 ﻿using BoilerPlate.Core.UserManagement.Requirements;
-using BoilerPlate.Shared.Infrastructure.Auth;
-using BoilerPlate.Shared.Infrastructure.Services;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace BoilerPlate.Core.UserManagement;
 

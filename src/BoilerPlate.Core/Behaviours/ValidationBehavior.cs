@@ -1,6 +1,4 @@
-﻿using MediatR;
-
-namespace BoilerPlate.Core.Behaviours;
+﻿namespace BoilerPlate.Core.Behaviours;
 
 /// <summary>
 /// Represents the validation behavior middleware.
@@ -19,16 +17,15 @@ public sealed class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<
     /// <param name="validators">The validator for the current request type.</param>
     public ValidationBehavior(IEnumerable<IValidator<TRequest>> validators) => _validators = validators;
 
-    /// <inheritdoc />
-    public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken,
-        RequestHandlerDelegate<TResponse> next)
+    public async ValueTask<TResponse> Handle(TRequest message, CancellationToken cancellationToken,
+        MessageHandlerDelegate<TRequest, TResponse> next)
     {
         if (!_validators.Any())
         {
-            return await next();
+            return await next(message, cancellationToken);
         }
 
-        var context = new ValidationContext<TRequest>(request);
+        var context = new ValidationContext<TRequest>(message);
 
         var failures = _validators
             .Select(v => v.Validate(context))
@@ -41,6 +38,6 @@ public sealed class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<
             throw new ValidationException(failures);
         }
 
-        return await next();
+        return await next(message, cancellationToken);
     }
 }

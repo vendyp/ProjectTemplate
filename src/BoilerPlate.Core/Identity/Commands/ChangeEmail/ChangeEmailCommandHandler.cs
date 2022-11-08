@@ -1,33 +1,31 @@
-﻿using BoilerPlate.Shared.Abstraction.Encryption;
+﻿using BoilerPlate.Core.Abstractions;
 
 namespace BoilerPlate.Core.Identity.Commands.ChangeEmail;
 
 public class ChangeEmailCommandHandler : ICommandHandler<ChangeEmailCommand, Result>
 {
-    private readonly IUserService _userService;
-    private readonly IDbContext _dbContext;
-    private readonly IRng _rng;
+    private readonly IServiceProvider _serviceProvider;
 
-    public ChangeEmailCommandHandler(IUserService userService, IDbContext dbContext, IRng rng)
-    {
-        _userService = userService;
-        _dbContext = dbContext;
-        _rng = rng;
-    }
+    public ChangeEmailCommandHandler(IServiceProvider serviceProvider) => _serviceProvider = serviceProvider;
 
-    public async Task<Result> Handle(ChangeEmailCommand request, CancellationToken cancellationToken)
+    public async ValueTask<Result> Handle(ChangeEmailCommand request, CancellationToken cancellationToken)
     {
-        var user = await _userService.GetUserByIdAsync(request.GetUserId()!.Value, cancellationToken);
+        using var scope = _serviceProvider.CreateScope();
+        var userService = scope.ServiceProvider.GetRequiredService<IUserService>();
+        var rng = scope.ServiceProvider.GetRequiredService<IRng>();
+        var dbContext = scope.ServiceProvider.GetRequiredService<IDbContext>();
+
+        var user = await userService.GetUserByIdAsync(request.GetUserId()!.Value, cancellationToken);
 
         if (user!.Email == request.NewEmail)
             return Result.Failure(IdentityErrors.SameAsOldEmail);
 
         user.Email = request.NewEmail;
         user.EmailActivationAt = null;
-        user.EmailActivationCode = _rng.Generate(512);
+        user.EmailActivationCode = rng.Generate(512);
         user.EmailActivationStatus = EmailActivationStatus.NeedActivation;
 
-        await _dbContext.SaveChangesAsync(cancellationToken);
+        await dbContext.SaveChangesAsync(cancellationToken);
 
         return Result.Success();
     }

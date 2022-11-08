@@ -1,6 +1,4 @@
-﻿using BoilerPlate.Shared.Abstraction.Auth;
-
-namespace BoilerPlate.Core.UserManagement.Requirements;
+﻿namespace BoilerPlate.Core.UserManagement.Requirements;
 
 public class ReadDataUserManagementRequirement : IRequirement
 {

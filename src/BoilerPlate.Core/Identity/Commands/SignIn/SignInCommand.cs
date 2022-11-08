@@ -1,6 +1,4 @@
-﻿using BoilerPlate.Shared.Abstraction.Auth;
-
-namespace BoilerPlate.Core.Identity.Commands.SignIn;
+﻿namespace BoilerPlate.Core.Identity.Commands.SignIn;
 
 public sealed class SignInCommand : ICommand<Result<JsonWebToken>>
 {

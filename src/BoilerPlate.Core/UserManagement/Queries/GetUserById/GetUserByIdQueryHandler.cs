@@ -1,17 +1,22 @@
-﻿namespace BoilerPlate.Core.UserManagement.Queries.GetUserById;
+﻿using BoilerPlate.Core.Abstractions;
+using BoilerPlate.Core.Contracts;
+
+namespace BoilerPlate.Core.UserManagement.Queries.GetUserById;
 
 public sealed class GetUserByIdQueryHandler : IQueryHandler<GetUserByIdQuery, Maybe<UserDetailResponse>>
 {
-    private readonly IUserService _userService;
+    private readonly IServiceProvider _serviceProvider;
 
-    public GetUserByIdQueryHandler(IUserService userService)
-    {
-        _userService = userService;
-    }
+    public GetUserByIdQueryHandler(IServiceProvider serviceProvider) => _serviceProvider = serviceProvider;
 
-    public async Task<Maybe<UserDetailResponse>> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
+    public async ValueTask<Maybe<UserDetailResponse>> Handle(GetUserByIdQuery request,
+        CancellationToken cancellationToken)
     {
-        var user = await _userService.GetUserByUserIdFullAsync(request.UserId, cancellationToken);
+        using var scope = _serviceProvider.CreateScope();
+
+        var userService = scope.ServiceProvider.GetRequiredService<IUserService>();
+
+        var user = await userService.GetUserByUserIdFullAsync(request.UserId, cancellationToken);
         if (user is null)
             return Maybe<UserDetailResponse>.None;
 

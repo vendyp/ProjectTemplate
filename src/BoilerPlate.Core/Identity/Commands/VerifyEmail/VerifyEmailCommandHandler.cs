@@ -1,22 +1,19 @@
-﻿using BoilerPlate.Shared.Abstraction.Time;
-using Microsoft.EntityFrameworkCore;
-
-namespace BoilerPlate.Core.Identity.Commands.VerifyEmail;
+﻿namespace BoilerPlate.Core.Identity.Commands.VerifyEmail;
 
 public sealed class VerifyEmailCommandHandler : ICommandHandler<VerifyEmailCommand, Result>
 {
-    private readonly IDbContext _dbContext;
-    private readonly IClock _clock;
+    private readonly IServiceProvider _serviceProvider;
 
-    public VerifyEmailCommandHandler(IDbContext dbContext, IClock clock)
-    {
-        _dbContext = dbContext;
-        _clock = clock;
-    }
+    public VerifyEmailCommandHandler(IServiceProvider serviceProvider) => _serviceProvider = serviceProvider;
 
-    public async Task<Result> Handle(VerifyEmailCommand request, CancellationToken cancellationToken)
+    public async ValueTask<Result> Handle(VerifyEmailCommand request, CancellationToken cancellationToken)
     {
-        var user = await _dbContext.Set<User>().Where(e => e.EmailActivationCode == request.Code)
+        using var scope = _serviceProvider.CreateScope();
+
+        var dbContext = scope.ServiceProvider.GetRequiredService<IDbContext>();
+        var clock = scope.ServiceProvider.GetRequiredService<IClock>();
+
+        var user = await dbContext.Set<User>().Where(e => e.EmailActivationCode == request.Code)
             .FirstOrDefaultAsync(cancellationToken);
 
         if (user is null || user.EmailActivationStatus != EmailActivationStatus.NeedActivation)
@@ -24,9 +21,9 @@ public sealed class VerifyEmailCommandHandler : ICommandHandler<VerifyEmailComma
 
         user.EmailActivationCode = null;
         user.EmailActivationStatus = EmailActivationStatus.Activated;
-        user.EmailActivationAt = _clock.CurrentDate();
+        user.EmailActivationAt = clock.CurrentDate();
 
-        await _dbContext.SaveChangesAsync(cancellationToken);
+        await dbContext.SaveChangesAsync(cancellationToken);
 
         return Result.Success();
     }

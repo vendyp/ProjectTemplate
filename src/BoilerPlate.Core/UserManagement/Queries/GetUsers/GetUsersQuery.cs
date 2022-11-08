@@ -1,4 +1,6 @@
-﻿namespace BoilerPlate.Core.UserManagement.Queries.GetUsers;
+﻿using BoilerPlate.Core.Contracts;
+
+namespace BoilerPlate.Core.UserManagement.Queries.GetUsers;
 
 public sealed class GetUsersQuery : BasePagination, IQuery<PagedList<UserResponse>>
 {

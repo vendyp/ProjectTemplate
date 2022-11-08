@@ -1,4 +1,6 @@
-﻿namespace BoilerPlate.Core.UserManagement.Commands.ChangePasswordUser;
+﻿using BoilerPlate.Core.Validators;
+
+namespace BoilerPlate.Core.UserManagement.Commands.ChangePasswordUser;
 
 public class ChangePasswordUserCommandValidator : AbstractValidator<ChangePasswordUserCommand>
 {

@@ -1,39 +1,29 @@
-﻿using BoilerPlate.Shared.Abstraction.Auth;
-using BoilerPlate.Shared.Abstraction.Storage;
-using BoilerPlate.Shared.Abstraction.Time;
-using BoilerPlate.Shared.Infrastructure.Auth;
+﻿using BoilerPlate.Core.Abstractions;
 
 namespace BoilerPlate.Core.Identity.Commands.SignIn;
 
 public sealed class SignInCommandHandler : ICommandHandler<SignInCommand, Result<JsonWebToken>>
 {
-    private readonly IUserService _userService;
-    private readonly IDbContext _dbContext;
-    private readonly IClock _clock;
-    private readonly AuthOptions _authOptions;
-    private readonly IAuthManager _authManager;
-    private readonly IRequestStorage _requestStorage;
-    private readonly IPermissionService _permissionService;
+    private readonly IServiceProvider _serviceProvider;
 
-    public SignInCommandHandler(IUserService userService, IDbContext dbContext, IClock clock, AuthOptions authOptions,
-        IAuthManager authManager, IRequestStorage requestStorage, IPermissionService permissionService)
-    {
-        _userService = userService;
-        _dbContext = dbContext;
-        _clock = clock;
-        _authOptions = authOptions;
-        _authManager = authManager;
-        _requestStorage = requestStorage;
-        _permissionService = permissionService;
-    }
+    public SignInCommandHandler(IServiceProvider serviceProvider) => _serviceProvider = serviceProvider;
 
-    public async Task<Result<JsonWebToken>> Handle(SignInCommand request, CancellationToken cancellationToken)
+    public async ValueTask<Result<JsonWebToken>> Handle(SignInCommand request, CancellationToken cancellationToken)
     {
-        var user = await _userService.GetUserByUsernameFullAsync(request.Username, cancellationToken);
+        using var scope = _serviceProvider.CreateScope();
+        var userService = scope.ServiceProvider.GetRequiredService<IUserService>();
+        var clock = scope.ServiceProvider.GetRequiredService<IClock>();
+        var dbContext = scope.ServiceProvider.GetRequiredService<IDbContext>();
+        var authOptions = scope.ServiceProvider.GetRequiredService<AuthOptions>();
+        var requestStorage = scope.ServiceProvider.GetRequiredService<IRequestStorage>();
+        var permissionService = scope.ServiceProvider.GetRequiredService<IPermissionService>();
+        var authManager = scope.ServiceProvider.GetRequiredService<IAuthManager>();
+
+        var user = await userService.GetUserByUsernameFullAsync(request.Username, cancellationToken);
         if (user?.Password is null)
             return Result.Failure<JsonWebToken>(IdentityErrors.InvalidUsernameAndPassword);
 
-        if (!_userService.VerifyPassword(user.Password!, request.Password))
+        if (!userService.VerifyPassword(user.Password!, request.Password))
             return Result.Failure<JsonWebToken>(IdentityErrors.InvalidUsernameAndPassword);
 
         var refreshToken = Guid.NewGuid().ToString("N");
@@ -43,24 +33,25 @@ public sealed class SignInCommandHandler : ICommandHandler<SignInCommand, Result
             UserId = user.UserId,
             ClientId = request.ClientId,
             RefreshToken = refreshToken,
-            ExpiryAt = _clock.CurrentDate().Add(_authOptions.RefreshTokenExpiry),
+            ExpiryAt = clock.CurrentDate().Add(authOptions.RefreshTokenExpiry),
             DeviceType = request.GetDeviceType()
         };
 
-        _dbContext.Set<UserToken>().Add(newUserToken);
+        dbContext.Set<UserToken>().Add(newUserToken);
 
-        await _dbContext.SaveChangesAsync(cancellationToken);
+        await dbContext.SaveChangesAsync(cancellationToken);
 
-        _requestStorage.Set($"{user.UserId}{request.ClientId}",
+        requestStorage.Set($"{user.UserId}{request.ClientId}",
             new UserIdentifier
             {
                 UserId = user.UserId, IdentifierId = refreshToken,
                 LastChangePassword = user.LastPasswordChangeAt!.Value, TokenId = newUserToken.UserTokenId.ToString()
-            }, _authOptions.Expiry);
+            }, authOptions.Expiry);
 
-        var claims = Extensions.GenerateCustomClaims(user, request.GetDeviceType(), await _permissionService.GetAllPermissionCodeAsync(cancellationToken));
+        var claims = Extensions.GenerateCustomClaims(user, request.GetDeviceType(),
+            await permissionService.GetAllPermissionCodeAsync(cancellationToken));
 
-        var jwt = _authManager.CreateToken(user.UserId, request.ClientId, refreshToken,
+        var jwt = authManager.CreateToken(user.UserId, request.ClientId, refreshToken,
             newUserToken.UserTokenId.ToString(), role: null, audience: null,
             claims: claims);
 

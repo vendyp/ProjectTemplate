@@ -8,7 +8,6 @@ using BoilerPlate.Core.UserManagement.Queries.GetUserById;
 using BoilerPlate.Core.UserManagement.Queries.GetUsers;
 using BoilerPlate.Shared.Abstraction.Models;
 using BoilerPlate.Shared.Abstraction.Queries;
-using BoilerPlate.Shared.Infrastructure.Primitives;
 using Microsoft.AspNetCore.Authorization;
 
 namespace BoilerPlate.Api.Controllers;
@@ -46,11 +45,12 @@ public sealed class UserManagementController : BaseController
     [Authorize(Policy = UserManagementConstant.PermissionWrite)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
-    public Task<IActionResult> CreateUserAsync([FromBody] CreateUserCommand command,
+    public async Task<IActionResult> CreateUserAsync([FromBody] CreateUserCommand command,
         CancellationToken cancellationToken)
-        => Result.Success(command)
-            .Bind(x => Sender.Send(x, cancellationToken))
-            .Match(Ok, BadRequest);
+    {
+        var result = await Sender.Send(command, cancellationToken);
+        return result.IsSuccess ? Ok() : BadRequest(result.Error);
+    }
 
     /// <summary>
     /// Edit User API
@@ -62,9 +62,12 @@ public sealed class UserManagementController : BaseController
     [Authorize(Policy = UserManagementConstant.PermissionWrite)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
-    public Task<IActionResult> EditUserAsync([FromBody] EditUserCommand command, CancellationToken cancellationToken)
-        => Result.Success(command).Bind(e => Sender.Send(e, cancellationToken))
-            .Match(Ok, BadRequest);
+    public async Task<IActionResult> EditUserAsync([FromBody] EditUserCommand command,
+        CancellationToken cancellationToken)
+    {
+        var result = await Sender.Send(command, cancellationToken);
+        return result.IsSuccess ? Ok() : BadRequest(result.Error);
+    }
 
     /// <summary>
     /// Change Password User API
@@ -76,10 +79,12 @@ public sealed class UserManagementController : BaseController
     [Authorize(Policy = UserManagementConstant.PermissionWrite)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
-    public Task<IActionResult> ChangePasswordUserAsync([FromBody] ChangePasswordUserCommand command,
+    public async Task<IActionResult> ChangePasswordUserAsync([FromBody] ChangePasswordUserCommand command,
         CancellationToken cancellationToken)
-        => Result.Success(command).Bind(e => Sender.Send(e, cancellationToken))
-            .Match(Ok, BadRequest);
+    {
+        var result = await Sender.Send(command, cancellationToken);
+        return result.IsSuccess ? Ok() : BadRequest(result.Error);
+    }
 
     /// <summary>
     /// Get Users API
@@ -109,9 +114,15 @@ public sealed class UserManagementController : BaseController
     [HttpGet("users/{id:Guid}")]
     [ProducesResponseType(typeof(PagedList<UserResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public Task<IActionResult> GetUserByIdAsync(
-        [FromRoute] Guid id) =>
-        Maybe<GetUserByIdQuery>.From(new GetUserByIdQuery { UserId = id })
-            .Bind(query => Sender.Send(query))
-            .Match(Ok, NotFound);
+    public async Task<IActionResult> GetUserByIdAsync(
+        [FromRoute] Guid id, CancellationToken cancellationToken)
+    {
+        var query = new GetUserByIdQuery(id);
+        var result = await Sender.Send(query, cancellationToken);
+        return result.HasValue ? Ok(result.Value) : NotFound();
+    }
+
+    // Maybe<GetUserByIdQuery>.From(new GetUserByIdQuery { UserId = id })
+    //         .Bind(query => Sender.Send(query))
+    //         .Match(Ok, NotFound);
 }

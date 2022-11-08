@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-namespace BoilerPlate.Core.UserManagement;
+﻿namespace BoilerPlate.Core.UserManagement;
 
 public class UserManagementInitializer : IInitializer
 {

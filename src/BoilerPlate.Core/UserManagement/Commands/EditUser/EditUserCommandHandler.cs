@@ -1,19 +1,22 @@
-﻿namespace BoilerPlate.Core.UserManagement.Commands.EditUser;
+﻿using BoilerPlate.Core.Abstractions;
+
+namespace BoilerPlate.Core.UserManagement.Commands.EditUser;
 
 public class EditUserCommandHandler : ICommandHandler<EditUserCommand, Result>
 {
-    private readonly IDbContext _dbContext;
-    private readonly IUserService _userService;
+    private readonly IServiceProvider _serviceProvider;
 
-    public EditUserCommandHandler(IDbContext dbContext, IUserService userService)
-    {
-        _dbContext = dbContext;
-        _userService = userService;
-    }
+    public EditUserCommandHandler(IServiceProvider serviceProvider)
+    => _serviceProvider = serviceProvider;
 
-    public async Task<Result> Handle(EditUserCommand request, CancellationToken cancellationToken)
+    public async ValueTask<Result> Handle(EditUserCommand request, CancellationToken cancellationToken)
     {
-        var user = await _userService.GetUserByIdAsync(request.UserId, cancellationToken);
+        using var scope = _serviceProvider.CreateScope();
+
+        var userService = scope.ServiceProvider.GetRequiredService<IUserService>();
+        var dbContext = scope.ServiceProvider.GetRequiredService<IDbContext>();
+        
+        var user = await userService.GetUserByIdAsync(request.UserId, cancellationToken);
         if (user is null)
             return Result.Failure(UserManagementErrors.UserNotFound);
 
@@ -25,7 +28,7 @@ public class EditUserCommandHandler : ICommandHandler<EditUserCommand, Result>
             if (user.AboutMe != request.AboutMe)
                 user.AboutMe = request.AboutMe;
 
-        await _dbContext.SaveChangesAsync(cancellationToken);
+        await dbContext.SaveChangesAsync(cancellationToken);
 
         return Result.Success();
     }

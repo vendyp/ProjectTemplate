@@ -1,4 +1,6 @@
-﻿namespace BoilerPlate.Core.UserManagement.Commands.CreateUser;
+﻿using BoilerPlate.Core.Validators;
+
+namespace BoilerPlate.Core.UserManagement.Commands.CreateUser;
 
 public sealed class CreateUserCommandValidator : AbstractValidator<CreateUserCommand>
 {

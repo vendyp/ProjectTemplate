@@ -1,47 +1,43 @@
 ﻿using BoilerPlate.Core.Abstractions;
-using BoilerPlate.Domain.Entities;
-using BoilerPlate.Shared.Abstraction.Commands;
-using BoilerPlate.Shared.Abstraction.Databases;
-using BoilerPlate.Shared.Abstraction.Primitives;
 using Microsoft.AspNetCore.Identity;
 
 namespace BoilerPlate.Core.UserManagement.Commands.CreateUser;
 
 public sealed class CreateUserCommandHandler : ICommandHandler<CreateUserCommand, Result>
 {
-    private readonly IDbContext _dbContext;
-    private readonly IUserService _userService;
-    private readonly IPasswordHasher<User> _passwordHasher;
-    private readonly IRoleService _roleService;
+    private readonly IServiceProvider _serviceProvider;
 
-    public CreateUserCommandHandler(IDbContext dbContext, IUserService userService,
-        IPasswordHasher<User> passwordHasher, IRoleService roleService)
+    public CreateUserCommandHandler(IServiceProvider serviceProvider)
     {
-        _dbContext = dbContext;
-        _userService = userService;
-        _passwordHasher = passwordHasher;
-        _roleService = roleService;
+        _serviceProvider = serviceProvider;
     }
 
-    public async Task<Result> Handle(CreateUserCommand request, CancellationToken cancellationToken)
+    public async ValueTask<Result> Handle(CreateUserCommand request, CancellationToken cancellationToken)
     {
-        var user = await _userService.GetUserByUsernameAsync(request.NormalizedUsername, cancellationToken);
+        using var scope = _serviceProvider.CreateScope();
+
+        var userService = scope.ServiceProvider.GetRequiredService<IUserService>();
+        var roleService = scope.ServiceProvider.GetRequiredService<IRoleService>();
+        var passwordHasher = scope.ServiceProvider.GetRequiredService<IPasswordHasher<User>>();
+        var dbContext = scope.ServiceProvider.GetRequiredService<IDbContext>();
+
+        var user = await userService.GetUserByUsernameAsync(request.NormalizedUsername, cancellationToken);
         if (user is not null)
             return Result.Failure(UserManagementErrors.UserAlreadyRegistered);
 
-        var roleOfUser = await _roleService.GetRoleOfUserAsync(cancellationToken);
+        var roleOfUser = await roleService.GetRoleOfUserAsync(cancellationToken);
 
         user = new User
         {
             Username = request.Username.ToLower(),
             FullName = request.Fullname,
-            Password = _passwordHasher.HashPassword(default!, request.Password)
+            Password = passwordHasher.HashPassword(default!, request.Password)
         };
 
         user.UserRoles.Add(new UserRole { RoleId = roleOfUser!.RoleId });
 
-        _dbContext.Insert(user);
-        await _dbContext.SaveChangesAsync(cancellationToken);
+        dbContext.Insert(user);
+        await dbContext.SaveChangesAsync(cancellationToken);
 
         return Result.Success();
     }

@@ -4,7 +4,6 @@ using BoilerPlate.Core.Identity.Commands.RefreshToken;
 using BoilerPlate.Core.Identity.Commands.SignIn;
 using BoilerPlate.Core.Identity.Commands.VerifyEmail;
 using BoilerPlate.Core.Identity.Queries.GetMe;
-using BoilerPlate.Shared.Infrastructure.Primitives;
 using Microsoft.AspNetCore.Authorization;
 
 namespace BoilerPlate.Api.Controllers;
@@ -55,10 +54,8 @@ public sealed class IdentityController : BaseController
         CancellationToken cancellationToken)
     {
         command.SetUserId(Context!.Identity.Id);
-
-        return await Result.Success(command)
-            .Bind(x => Sender.Send(x, cancellationToken))
-            .Match(Ok, BadRequest);
+        var result = await Sender.Send(command, cancellationToken);
+        return result.IsSuccess ? Ok() : BadRequest();
     }
 
     /// <summary>
@@ -87,11 +84,13 @@ public sealed class IdentityController : BaseController
     [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
-    public Task<IActionResult> ChangeEmailAsync([FromBody] ChangeEmailCommand command,
+    public async Task<IActionResult> ChangeEmailAsync([FromBody] ChangeEmailCommand command,
         CancellationToken cancellationToken)
-        => Result.Success(command.SetUserId(Context!.Identity.Id))
-            .Bind(x => Sender.Send(x, cancellationToken))
-            .Match(Ok, BadRequest);
+    {
+        command.SetUserId(Context!.Identity.Id);
+        var result = await Sender.Send(command, cancellationToken);
+        return result.IsSuccess ? Ok(result) : BadRequest(result.Error);
+    }
 
     /// <summary>
     /// Verify Email API
@@ -102,9 +101,11 @@ public sealed class IdentityController : BaseController
     [HttpPost("verify-email")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
-    public Task<IActionResult> VerifyEmailAsync([FromQuery] string code,
+    public async Task<IActionResult> VerifyEmailAsync([FromQuery] string code,
         CancellationToken cancellationToken)
-        => Result.Success(new VerifyEmailCommand { Code = code })
-            .Bind(x => Sender.Send(x, cancellationToken))
-            .Match(Ok, BadRequest);
+    {
+        var command = new VerifyEmailCommand { Code = code };
+        var result = await Sender.Send(command, cancellationToken);
+        return result.IsSuccess ? Ok() : BadRequest(result.Error);
+    }
 }
