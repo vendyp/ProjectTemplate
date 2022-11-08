@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Security.Claims;
 using BoilerPlate.Core.Behaviours;
 using BoilerPlate.Core.UserManagement;
 using Microsoft.AspNetCore.Identity;
@@ -18,7 +19,7 @@ public static class Extensions
         };
 
         foreach (var userRole in user.UserRoles)
-            claims.Add("roles", new[] { userRole.RoleId });
+            claims.Add(ClaimTypes.Role, new[] { userRole.RoleId });
 
         return claims;
     }
