@@ -59,13 +59,8 @@ app.UseCustomExceptionHandler();
 app.UseAuth();
 app.UseContext();
 app.UseLogging();
-//app.UseHttpsRedirection();
 app.UseRouting();
 app.UseAuthorization();
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapControllers();
-    endpoints.MapGet("/", context => context.Response.WriteAsync("Hello World!"));
-});
+app.MapGet("/", context => context.Response.WriteAsync("Hello World!"));
 
 app.Run();

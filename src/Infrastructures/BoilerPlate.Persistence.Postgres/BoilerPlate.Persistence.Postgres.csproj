@@ -1,22 +1,22 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <ItemGroup>
-        <ProjectReference Include="..\BoilerPlate.Domain\BoilerPlate.Domain.csproj" />
-        <ProjectReference Include="..\BoilerPlate.Shared.Infrastructure\BoilerPlate.Shared.Infrastructure.csproj" />
+        <ProjectReference Include="..\..\Cores\BoilerPlate.Domain\BoilerPlate.Domain.csproj" />
+        <ProjectReference Include="..\..\Shared\BoilerPlate.Shared.Infrastructure\BoilerPlate.Shared.Infrastructure.csproj" />
     </ItemGroup>
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.7" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.7">
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
     </ItemGroup>
-  
+
 </Project>

@@ -1,18 +1,18 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\BoilerPlate.Core\BoilerPlate.Core.csproj" />
     <ProjectReference Include="..\BoilerPlate.Persistence\BoilerPlate.Persistence.csproj" />
+    <ProjectReference Include="..\..\Cores\BoilerPlate.Core\BoilerPlate.Core.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.2.1" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.2.2" />
   </ItemGroup>
 
 </Project>

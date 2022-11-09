@@ -1,10 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
-    <ItemGroup>
-        <ProjectReference Include="..\BoilerPlate.Domain\BoilerPlate.Domain.csproj" />
-        <ProjectReference Include="..\BoilerPlate.Shared.Infrastructure\BoilerPlate.Shared.Infrastructure.csproj" />
-    </ItemGroup>
-
     <ItemGroup>
         <Folder Include="UserManagement\Commands" />
     </ItemGroup>
@@ -14,12 +8,17 @@
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="System.Linq.Dynamic.Core" Version="1.2.20" />
-        <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.2.1" />
+        <PackageReference Include="System.Linq.Dynamic.Core" Version="1.2.22" />
+        <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.2.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\Shared\BoilerPlate.Shared.Infrastructure\BoilerPlate.Shared.Infrastructure.csproj" />
+      <ProjectReference Include="..\BoilerPlate.Domain\BoilerPlate.Domain.csproj" />
     </ItemGroup>
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
