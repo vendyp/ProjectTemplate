@@ -61,10 +61,6 @@ app.UseContext();
 app.UseLogging();
 app.UseRouting();
 app.UseAuthorization();
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapControllers();
-    endpoints.MapGet("/", context => context.Response.WriteAsync("Hello World!"));
-});
-
+app.MapControllers();
+app.MapGet("/", context => context.Response.WriteAsync("Hello World!"));
 app.Run();

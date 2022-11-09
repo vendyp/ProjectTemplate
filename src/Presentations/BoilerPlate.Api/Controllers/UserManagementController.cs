@@ -1,5 +1,4 @@
 ﻿using BoilerPlate.Core.Contracts;
-using BoilerPlate.Core.UserManagement;
 using BoilerPlate.Core.UserManagement.Commands.ChangePasswordUser;
 using BoilerPlate.Core.UserManagement.Commands.CreateUser;
 using BoilerPlate.Core.UserManagement.Commands.EditUser;
@@ -12,7 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace BoilerPlate.Api.Controllers;
 
-[Authorize(Policy = UserManagementConstant.PermissionRead)]
+[Authorize(Roles = RoleConstant.Administrator)]
 public sealed class UserManagementController : BaseController
 {
     /// <summary>
@@ -33,7 +32,6 @@ public sealed class UserManagementController : BaseController
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpPost("users")]
-    [Authorize(Policy = UserManagementConstant.PermissionWrite)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CreateUserAsync([FromBody] CreateUserCommand command,
@@ -50,7 +48,6 @@ public sealed class UserManagementController : BaseController
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpPut("users")]
-    [Authorize(Policy = UserManagementConstant.PermissionWrite)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> EditUserAsync([FromBody] EditUserCommand command,
@@ -67,7 +64,6 @@ public sealed class UserManagementController : BaseController
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpPut("users/password")]
-    [Authorize(Policy = UserManagementConstant.PermissionWrite)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> ChangePasswordUserAsync([FromBody] ChangePasswordUserCommand command,

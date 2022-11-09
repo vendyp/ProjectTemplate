@@ -1,7 +1,6 @@
 ﻿using System.Reflection;
 using System.Security.Claims;
 using BoilerPlate.Core.Behaviours;
-using BoilerPlate.Core.UserManagement;
 using Microsoft.AspNetCore.Identity;
 
 namespace BoilerPlate.Core;
@@ -30,7 +29,5 @@ public static class Extensions
         services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
         services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
         services.AddMediator();
-
-        services.AddUserManagement();
     }
 }
