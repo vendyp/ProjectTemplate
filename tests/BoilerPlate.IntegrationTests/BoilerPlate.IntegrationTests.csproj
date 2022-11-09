@@ -24,7 +24,6 @@
   <ItemGroup>
     <ProjectReference Include="..\BoilerPlate.UnitTests\BoilerPlate.UnitTests.csproj" />
     <ProjectReference Include="..\..\src\Infrastructures\BoilerPlate.Persistence\BoilerPlate.Persistence.csproj" />
-    <ProjectReference Include="..\..\src\Infrastructures\BoilerPlate.Persistence.Postgres\BoilerPlate.Persistence.Postgres.csproj" />
   </ItemGroup>
 
 </Project>

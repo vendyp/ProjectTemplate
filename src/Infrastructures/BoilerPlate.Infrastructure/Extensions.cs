@@ -17,7 +17,7 @@ public static class Extensions
     {
         services.AddCore();
         services.AddScoped<IUserService, UserService>();
-        services.AddSqlServer2();
+        services.AddSqlServerDbContext();
         services.AddInitializer<DomainInitializer>();
     }
 }

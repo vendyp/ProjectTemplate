@@ -10,7 +10,7 @@ public static class Extensions
 {
     public const string DefaultConfigName = "SqlServer";
 
-    public static void AddSqlServer2(this IServiceCollection services, string configName = DefaultConfigName)
+    public static void AddSqlServerDbContext(this IServiceCollection services, string configName = DefaultConfigName)
     {
         var options = services.GetOptions<SqlServerOptions>(configName);
         if (string.IsNullOrWhiteSpace(options.ConnectionString))
@@ -20,7 +20,7 @@ public static class Extensions
         services.AddScoped<IDbContext>(serviceProvider => serviceProvider.GetRequiredService<SqlServerDbContext>());
     }
 
-    public static void AddSqlServer2(this IServiceCollection services, Action<SqlServerDbContextOptionsBuilder>? action,
+    public static void AddSqlServerDbContext(this IServiceCollection services, Action<SqlServerDbContextOptionsBuilder>? action,
         string configName = DefaultConfigName)
     {
         var options = services.GetOptions<SqlServerOptions>(configName);
