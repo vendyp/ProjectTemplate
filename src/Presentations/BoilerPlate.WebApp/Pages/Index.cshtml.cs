@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace BoilerPlate.Web.Pages;
+namespace BoilerPlate.WebApp.Pages;
 
 public class IndexModel : PageModel
 {
