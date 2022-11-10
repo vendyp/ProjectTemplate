@@ -1,4 +1,9 @@
+using BoilerPlate.WebApp;
+
 var builder = WebApplication.CreateBuilder(args);
+
+// Inject services
+builder.Services.AddApplicationOptions();
 
 // Add services to the container.
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
