@@ -31,6 +31,14 @@ public sealed class Error : ValueObject
     /// </summary>
     internal static Error None => new(string.Empty, string.Empty);
 
+    /// <summary>
+    /// Create error instance.
+    /// </summary>
+    /// <param name="code"></param>
+    /// <param name="message"></param>
+    /// <returns></returns>
+    public static Error Create(string code, string message) => new(code, message);
+
     public static implicit operator string(Error? error) => error?.Code ?? string.Empty;
 
     /// <inheritdoc />

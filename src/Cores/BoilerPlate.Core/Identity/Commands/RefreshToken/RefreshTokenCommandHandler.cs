@@ -25,7 +25,7 @@ public class RefreshTokenCommandHandler : ICommandHandler<RefreshTokenCommand, R
             .FirstOrDefaultAsync(cancellationToken);
 
         if (userToken is null || userToken.IsUsed || userToken.ExpiryAt < clock.CurrentDate())
-            return Result.Failure<JsonWebToken>(IdentityErrors.RefreshTokenInvalidRequest);
+            return Result.Failure<JsonWebToken>(Error.Create("ExRT001", "Invalid request."));
 
         var refreshToken = Guid.NewGuid().ToString("N");
 

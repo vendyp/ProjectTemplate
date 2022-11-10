@@ -23,7 +23,7 @@ public sealed class CreateUserCommandHandler : ICommandHandler<CreateUserCommand
 
         var user = await userService.GetUserByUsernameAsync(request.NormalizedUsername, cancellationToken);
         if (user is not null)
-            return Result.Failure(UserManagementErrors.UserAlreadyRegistered);
+            return Result.Failure(Error.Create("ExCU001", "User already registered."));
 
         user = new User
         {

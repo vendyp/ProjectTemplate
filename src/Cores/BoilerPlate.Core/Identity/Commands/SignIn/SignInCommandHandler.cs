@@ -20,10 +20,10 @@ public sealed class SignInCommandHandler : ICommandHandler<SignInCommand, Result
 
         var user = await userService.GetUserByUsernameFullAsync(request.Username, cancellationToken);
         if (user?.Password is null)
-            return Result.Failure<JsonWebToken>(IdentityErrors.InvalidUsernameAndPassword);
+            return Result.Failure<JsonWebToken>(Error.Create("ExSI001", "Invalid username or password."));
 
         if (!userService.VerifyPassword(user.Password!, request.Password))
-            return Result.Failure<JsonWebToken>(IdentityErrors.InvalidUsernameAndPassword);
+            return Result.Failure<JsonWebToken>(Error.Create("ExSI001", "Invalid username or password."));
 
         var refreshToken = Guid.NewGuid().ToString("N");
 

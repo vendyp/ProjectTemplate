@@ -7,7 +7,7 @@ public class EditUserCommandHandler : ICommandHandler<EditUserCommand, Result>
     private readonly IServiceProvider _serviceProvider;
 
     public EditUserCommandHandler(IServiceProvider serviceProvider)
-    => _serviceProvider = serviceProvider;
+        => _serviceProvider = serviceProvider;
 
     public async ValueTask<Result> Handle(EditUserCommand request, CancellationToken cancellationToken)
     {
@@ -15,10 +15,10 @@ public class EditUserCommandHandler : ICommandHandler<EditUserCommand, Result>
 
         var userService = scope.ServiceProvider.GetRequiredService<IUserService>();
         var dbContext = scope.ServiceProvider.GetRequiredService<IDbContext>();
-        
+
         var user = await userService.GetUserByIdAsync(request.UserId, cancellationToken);
         if (user is null)
-            return Result.Failure(UserManagementErrors.UserNotFound);
+            return Result.Failure(Error.Create("ExEU001", "Data not found."));
 
         if (request.FullName.IsNotNullOrWhiteSpace())
             if (user.FullName != request.FullName)

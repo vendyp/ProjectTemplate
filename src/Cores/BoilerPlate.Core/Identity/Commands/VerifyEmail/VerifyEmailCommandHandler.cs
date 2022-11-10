@@ -17,7 +17,7 @@ public sealed class VerifyEmailCommandHandler : ICommandHandler<VerifyEmailComma
             .FirstOrDefaultAsync(cancellationToken);
 
         if (user is null || user.EmailActivationStatus != EmailActivationStatus.NeedActivation)
-            return Result.Failure(IdentityErrors.InvalidEmailActivationCode);
+            return Result.Failure(Error.Create("ExVE001", "Data not found."));
 
         user.EmailActivationCode = null;
         user.EmailActivationStatus = EmailActivationStatus.Activated;

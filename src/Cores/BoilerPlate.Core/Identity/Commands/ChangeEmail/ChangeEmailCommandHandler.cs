@@ -18,7 +18,7 @@ public class ChangeEmailCommandHandler : ICommandHandler<ChangeEmailCommand, Res
         var user = await userService.GetUserByIdAsync(request.GetUserId()!.Value, cancellationToken);
 
         if (user!.Email == request.NewEmail)
-            return Result.Failure(IdentityErrors.SameAsOldEmail);
+            return Result.Failure(Error.Create("ExCE001", "Email same as before."));
 
         user.Email = request.NewEmail;
         user.EmailActivationAt = null;

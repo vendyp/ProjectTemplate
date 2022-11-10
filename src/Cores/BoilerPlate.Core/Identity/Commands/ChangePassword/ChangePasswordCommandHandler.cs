@@ -18,10 +18,10 @@ internal sealed class ChangePasswordCommandHandler : ICommandHandler<ChangePassw
 
         var user = await userService.GetUserByIdAsync(request.GetUserId(), cancellationToken);
         if (user is null || user.Password is null)
-            return Result.Failure(IdentityErrors.UserNotFound);
+            return Result.Failure(Error.Create("ExCP001", "User not found."));
 
         if (userService.VerifyPassword(user.Password!, request.NewPassword))
-            return Result.Failure(IdentityErrors.PasswordIsSame);
+            return Result.Failure(Error.Create("ExCP002", "Password is same as before."));
 
         user.Password = userService.HashPassword(request.NewPassword);
         user.LastPasswordChangeAt = clock.CurrentDate();

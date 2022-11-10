@@ -19,10 +19,10 @@ public class ChangePasswordUserCommandHandler : ICommandHandler<ChangePasswordUs
         var userService = scope.ServiceProvider.GetRequiredService<IUserService>();
         var passwordHasher = scope.ServiceProvider.GetRequiredService<IPasswordHasher<User>>();
         var dbContext = scope.ServiceProvider.GetRequiredService<IDbContext>();
-        
+
         var user = await userService.GetUserByIdAsync(request.UserId, cancellationToken);
         if (user is null)
-            return Result.Failure(UserManagementErrors.UserNotFoundInChangePassword);
+            return Result.Failure(Error.Create("ExCP001", "User not found."));
 
         user.Password = passwordHasher.HashPassword(null!, request.NewPassword);
 
