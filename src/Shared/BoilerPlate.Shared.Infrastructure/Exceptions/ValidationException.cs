@@ -16,7 +16,7 @@ public sealed class ValidationException : Exception
         : base("One or more validation failures has occurred.") =>
         Errors = failures
             .Distinct()
-            .Select(failure => new Error(failure.ErrorCode, failure.ErrorMessage))
+            .Select(failure => new Error("invalid_payload", failure.ErrorMessage))
             .ToArray();
 
     /// <summary>

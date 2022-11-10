@@ -1,4 +1,6 @@
-﻿namespace BoilerPlate.Core.Behaviours;
+﻿using ValidationException = BoilerPlate.Shared.Infrastructure.Exceptions.ValidationException;
+
+namespace BoilerPlate.Core.Behaviours;
 
 /// <summary>
 /// Represents the validation behavior middleware.
@@ -6,8 +8,7 @@
 /// <typeparam name="TRequest">The request type.</typeparam>
 /// <typeparam name="TResponse">The response type.</typeparam>
 public sealed class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
-    where TRequest : class, IRequest<TResponse>
-    where TResponse : class
+    where TRequest : IMessage
 {
     private readonly IEnumerable<IValidator<TRequest>> _validators;
 

@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using BoilerPlate.Shared.Abstraction.Primitives;
 using BoilerPlate.Shared.Infrastructure.Exceptions;
 using Microsoft.AspNetCore.Http;
@@ -58,7 +59,8 @@ internal class CustomExceptionHandlerMiddleware
 
         var serializerOptions = new JsonSerializerOptions
         {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
         };
 
         string response = JsonSerializer.Serialize(new ApiErrorResponse(errors), serializerOptions);
