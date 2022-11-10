@@ -1,25 +1,56 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
-    Layout = null;
+    ViewData["Title"] = "Log In";
 }
 
-<html lang="en">
-<head>
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Login</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
-    <link rel="stylesheet" href="~/BoilerPlate.WebApp.styles.css" asp-append-version="true"/>
-</head>
-<body>
-<div class="container">
-    <div class="text-center">
-        <h1 class="display-4">Aaa</h1>
-        <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="row justify-content-center">
+    <div class="col-lg-5 col-md-7">
+        <div class="card">
+            <div class="card-body">
+                <div class="text-center text-muted mb-4">
+                    <small>Sign in with credentials</small>
+                </div>
+                <form method="post">
+                    <div class="form-group mb-3">
+                        <div class="input-group input-group-alternative">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <i class="fa fa-user"></i>
+                                </span>
+                            </div>
+                            <input class="form-control" placeholder="Username" asp-for="Input.Username"/>
+                        </div>
+                        <span asp-validation-for="Input.Username" class="invalid-feedback" style="display: block"></span>
+                    </div>
+                    <div class="form-group mb-3">
+                        <div class="input-group input-group-alternative">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <i class="fa fa-user-secret"></i>
+                                </span>
+                            </div>
+                            <input class="form-control" placeholder="Password" asp-for="Input.Password" type="password"/>
+                        </div>
+                        <span asp-validation-for="Input.Password" class="invalid-feedback" style="display: block"></span>
+                    </div>
+                    <div class="text-center">
+                        <button class="btn btn-primary my-4" asp-page-handler="Login">Sign in</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-6">
+                <a id="forgot-password" href="#" class="text-light">
+                    <small>Forgot password?</small>
+                </a>
+            </div>
+            <div class="col-6 text-right">
+                <a href="#" class="text-light">
+                    <small>Create new account</small>
+                </a>
+            </div>
+        </div>
     </div>
 </div>
-</body>
-</html>
