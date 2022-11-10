@@ -4,27 +4,33 @@ namespace BoilerPlate.Core.Identity.Commands.RefreshToken;
 
 public class RefreshTokenCommandHandler : ICommandHandler<RefreshTokenCommand, Result<JsonWebToken>>
 {
-    private readonly IServiceProvider _serviceProvider;
+    private readonly IUserService _userService;
+    private readonly IClock _clock;
+    private readonly IDbContext _dbContext;
+    private readonly AuthOptions _authOptions;
+    private readonly IRequestStorage _requestStorage;
+    private readonly IAuthManager _authManager;
 
-    public RefreshTokenCommandHandler(IServiceProvider serviceProvider) => _serviceProvider = serviceProvider;
+    public RefreshTokenCommandHandler(IUserService userService, IClock clock, IDbContext dbContext,
+        AuthOptions authOptions, IRequestStorage requestStorage, IAuthManager authManager)
+    {
+        _userService = userService;
+        _clock = clock;
+        _dbContext = dbContext;
+        _authOptions = authOptions;
+        _requestStorage = requestStorage;
+        _authManager = authManager;
+    }
 
     public async ValueTask<Result<JsonWebToken>> Handle(RefreshTokenCommand request,
         CancellationToken cancellationToken)
     {
-        using var scope = _serviceProvider.CreateScope();
-        var userService = scope.ServiceProvider.GetRequiredService<IUserService>();
-        var clock = scope.ServiceProvider.GetRequiredService<IClock>();
-        var dbContext = scope.ServiceProvider.GetRequiredService<IDbContext>();
-        var authOptions = scope.ServiceProvider.GetRequiredService<AuthOptions>();
-        var requestStorage = scope.ServiceProvider.GetRequiredService<IRequestStorage>();
-        var authManager = scope.ServiceProvider.GetRequiredService<IAuthManager>();
-
-        var userToken = await dbContext.Set<UserToken>()
+        var userToken = await _dbContext.Set<UserToken>()
             .Include(e => e.User)
             .Where(e => e.ClientId == request.ClientId && e.RefreshToken == request.RefreshToken)
             .FirstOrDefaultAsync(cancellationToken);
 
-        if (userToken is null || userToken.IsUsed || userToken.ExpiryAt < clock.CurrentDate())
+        if (userToken is null || userToken.IsUsed || userToken.ExpiryAt < _clock.CurrentDate())
             return Result.Failure<JsonWebToken>(Error.Create("ExRT001", "Invalid request."));
 
         var refreshToken = Guid.NewGuid().ToString("N");
@@ -34,25 +40,25 @@ public class RefreshTokenCommandHandler : ICommandHandler<RefreshTokenCommand, R
             UserId = userToken.UserId,
             ClientId = request.ClientId,
             RefreshToken = refreshToken,
-            ExpiryAt = clock.CurrentDate().Add(authOptions.RefreshTokenExpiry),
+            ExpiryAt = _clock.CurrentDate().Add(_authOptions.RefreshTokenExpiry),
             DeviceType = userToken.DeviceType
         };
-        dbContext.Set<UserToken>().Add(newUserToken);
-        await dbContext.SaveChangesAsync(cancellationToken);
+        _dbContext.Set<UserToken>().Add(newUserToken);
+        await _dbContext.SaveChangesAsync(cancellationToken);
 
-        var user = (await userService.GetUserByUsernameFullAsync(userToken.User!.Username, cancellationToken))!;
+        var user = (await _userService.GetUserByUsernameFullAsync(userToken.User!.Username, cancellationToken))!;
 
-        requestStorage.Set($"{userToken.UserId}{request.ClientId}",
+        _requestStorage.Set($"{userToken.UserId}{request.ClientId}",
             new UserIdentifier
             {
                 UserId = user.UserId, IdentifierId = refreshToken,
                 LastChangePassword = user.LastPasswordChangeAt!.Value,
                 TokenId = newUserToken.UserTokenId.ToString()
-            }, authOptions.Expiry);
+            }, _authOptions.Expiry);
 
         var claims = Extensions.GenerateCustomClaims(user, userToken.DeviceType);
 
-        var jwt = authManager.CreateToken(user.UserId, request.ClientId, refreshToken,
+        var jwt = _authManager.CreateToken(user.UserId, request.ClientId, refreshToken,
             newUserToken.UserTokenId.ToString(), role: null,
             audience: null,
             claims: claims);

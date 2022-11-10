@@ -4,19 +4,18 @@ namespace BoilerPlate.Core.UserManagement.Commands.EditUser;
 
 public class EditUserCommandHandler : ICommandHandler<EditUserCommand, Result>
 {
-    private readonly IServiceProvider _serviceProvider;
+    private readonly IUserService _userService;
+    private readonly IDbContext _dbContext;
 
-    public EditUserCommandHandler(IServiceProvider serviceProvider)
-        => _serviceProvider = serviceProvider;
+    public EditUserCommandHandler(IUserService userService, IDbContext dbContext)
+    {
+        _userService = userService;
+        _dbContext = dbContext;
+    }
 
     public async ValueTask<Result> Handle(EditUserCommand request, CancellationToken cancellationToken)
     {
-        using var scope = _serviceProvider.CreateScope();
-
-        var userService = scope.ServiceProvider.GetRequiredService<IUserService>();
-        var dbContext = scope.ServiceProvider.GetRequiredService<IDbContext>();
-
-        var user = await userService.GetUserByIdAsync(request.UserId, cancellationToken);
+        var user = await _userService.GetUserByIdAsync(request.UserId, cancellationToken);
         if (user is null)
             return Result.Failure(Error.Create("ExEU001", "Data not found."));
 
@@ -28,7 +27,7 @@ public class EditUserCommandHandler : ICommandHandler<EditUserCommand, Result>
             if (user.AboutMe != request.AboutMe)
                 user.AboutMe = request.AboutMe;
 
-        await dbContext.SaveChangesAsync(cancellationToken);
+        await _dbContext.SaveChangesAsync(cancellationToken);
 
         return Result.Success();
     }

@@ -27,7 +27,7 @@ public static class Extensions
     {
         services.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
         services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly(), ServiceLifetime.Singleton);
-        services.AddSingleton(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
-        services.AddMediator();
+        services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+        services.AddMediator(options => options.ServiceLifetime = ServiceLifetime.Scoped);
     }
 }

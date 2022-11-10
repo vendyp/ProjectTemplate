@@ -5,17 +5,16 @@ namespace BoilerPlate.Core.Identity.Queries.GetMe;
 
 public sealed class GetMeQueryHandler : IQueryHandler<GetMeQuery, Maybe<MeResponse?>>
 {
-    private readonly IServiceProvider _serviceProvider;
+    private readonly IUserService _userService;
 
-    public GetMeQueryHandler(IServiceProvider serviceProvider) => _serviceProvider = serviceProvider;
+    public GetMeQueryHandler(IUserService userService)
+    {
+        _userService = userService;
+    }
 
     public async ValueTask<Maybe<MeResponse?>> Handle(GetMeQuery request, CancellationToken cancellationToken)
     {
-        using var scope = _serviceProvider.CreateScope();
-
-        var userService = scope.ServiceProvider.GetRequiredService<IUserService>();
-
-        var user = await userService.GetUserByIdAsync(request.UserId, cancellationToken);
+        var user = await _userService.GetUserByIdAsync(request.UserId, cancellationToken);
         if (user is null)
             return Maybe<MeResponse?>.None;
 
