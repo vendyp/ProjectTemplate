@@ -1,6 +1,6 @@
 ﻿namespace BoilerPlate.Core.UserManagement.Commands.EditUser;
 
-public class EditUserCommand : ICommand<Result>
+public sealed record EditUserCommand : ICommand<Result>
 {
     public Guid UserId { get; init; }
     public string? FullName { get; init; }
