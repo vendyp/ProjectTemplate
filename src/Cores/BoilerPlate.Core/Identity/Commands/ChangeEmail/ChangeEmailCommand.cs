@@ -1,6 +1,6 @@
 ﻿namespace BoilerPlate.Core.Identity.Commands.ChangeEmail;
 
-public sealed class ChangeEmailCommand : ICommand<Result>
+public sealed record ChangeEmailCommand : ICommand<Result>
 {
     private Guid? _userId;
     public string NewEmail { get; set; } = null!;

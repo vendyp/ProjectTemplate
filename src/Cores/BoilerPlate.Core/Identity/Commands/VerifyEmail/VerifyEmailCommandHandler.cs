@@ -2,28 +2,28 @@
 
 public sealed class VerifyEmailCommandHandler : ICommandHandler<VerifyEmailCommand, Result>
 {
-    private readonly IServiceProvider _serviceProvider;
+    private readonly IDbContext _dbContext;
+    private readonly IClock _clock;
 
-    public VerifyEmailCommandHandler(IServiceProvider serviceProvider) => _serviceProvider = serviceProvider;
+    public VerifyEmailCommandHandler(IDbContext dbContext, IClock clock)
+    {
+        _dbContext = dbContext;
+        _clock = clock;
+    }
 
     public async ValueTask<Result> Handle(VerifyEmailCommand request, CancellationToken cancellationToken)
     {
-        using var scope = _serviceProvider.CreateScope();
-
-        var dbContext = scope.ServiceProvider.GetRequiredService<IDbContext>();
-        var clock = scope.ServiceProvider.GetRequiredService<IClock>();
-
-        var user = await dbContext.Set<User>().Where(e => e.EmailActivationCode == request.Code)
+        var user = await _dbContext.Set<User>().Where(e => e.EmailActivationCode == request.Code)
             .FirstOrDefaultAsync(cancellationToken);
 
         if (user is null || user.EmailActivationStatus != EmailActivationStatus.NeedActivation)
-            return Result.Failure(IdentityErrors.InvalidEmailActivationCode);
+            return Result.Failure(Error.Create("ExVE001", "Data not found."));
 
         user.EmailActivationCode = null;
         user.EmailActivationStatus = EmailActivationStatus.Activated;
-        user.EmailActivationAt = clock.CurrentDate();
+        user.EmailActivationAt = _clock.CurrentDate();
 
-        await dbContext.SaveChangesAsync(cancellationToken);
+        await _dbContext.SaveChangesAsync(cancellationToken);
 
         return Result.Success();
     }

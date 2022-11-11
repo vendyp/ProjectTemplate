@@ -1,6 +1,6 @@
 ﻿namespace BoilerPlate.Core.UserManagement.Commands.CreateUser;
 
-public sealed class CreateUserCommand : ICommand<Result>
+public sealed record CreateUserCommand : ICommand<Result>
 {
     public string Username { get; set; } = null!;
     public string NormalizedUsername => Username.ToUpperInvariant();

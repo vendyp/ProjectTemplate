@@ -1,6 +1,6 @@
 ﻿namespace BoilerPlate.Core.Identity.Commands.ChangePassword;
 
-public sealed class ChangePasswordCommand : ICommand<Result>
+public sealed record ChangePasswordCommand : ICommand<Result>
 {
     private Guid _userId;
 

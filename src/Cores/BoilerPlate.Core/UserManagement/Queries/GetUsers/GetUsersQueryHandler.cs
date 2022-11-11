@@ -5,18 +5,16 @@ namespace BoilerPlate.Core.UserManagement.Queries.GetUsers;
 
 public sealed class GetUsersQueryHandler : IQueryHandler<GetUsersQuery, PagedList<UserResponse>>
 {
-    private readonly IServiceProvider _serviceProvider;
+    private readonly IDbContext _dbContext;
 
-    public GetUsersQueryHandler(IServiceProvider serviceProvider)
-        => _serviceProvider = serviceProvider;
+    public GetUsersQueryHandler(IDbContext dbContext)
+    {
+        _dbContext = dbContext;
+    }
 
     public async ValueTask<PagedList<UserResponse>> Handle(GetUsersQuery request, CancellationToken cancellationToken)
     {
-        using var scope = _serviceProvider.CreateScope();
-
-        var dbContext = scope.ServiceProvider.GetRequiredService<IDbContext>();
-
-        var queryable = dbContext.Set<User>().AsNoTracking().AsQueryable();
+        var queryable = _dbContext.Set<User>().AsNoTracking().AsQueryable();
 
         if (request.Username.IsNotNullOrWhiteSpace())
             queryable = queryable.Where(e => EF.Functions.Like(e.Username, $"%{request.Username}%"));

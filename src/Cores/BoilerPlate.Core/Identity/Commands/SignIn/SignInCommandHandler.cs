@@ -4,26 +4,32 @@ namespace BoilerPlate.Core.Identity.Commands.SignIn;
 
 public sealed class SignInCommandHandler : ICommandHandler<SignInCommand, Result<JsonWebToken>>
 {
-    private readonly IServiceProvider _serviceProvider;
+    private readonly IUserService _userService;
+    private readonly IClock _clock;
+    private readonly IDbContext _dbContext;
+    private readonly AuthOptions _authOptions;
+    private readonly IRequestStorage _requestStorage;
+    private readonly IAuthManager _authManager;
 
-    public SignInCommandHandler(IServiceProvider serviceProvider) => _serviceProvider = serviceProvider;
+    public SignInCommandHandler(IUserService userService, IClock clock, IDbContext dbContext, AuthOptions authOptions,
+        IRequestStorage requestStorage, IAuthManager authManager)
+    {
+        _userService = userService;
+        _clock = clock;
+        _dbContext = dbContext;
+        _authOptions = authOptions;
+        _requestStorage = requestStorage;
+        _authManager = authManager;
+    }
 
     public async ValueTask<Result<JsonWebToken>> Handle(SignInCommand request, CancellationToken cancellationToken)
     {
-        using var scope = _serviceProvider.CreateScope();
-        var userService = scope.ServiceProvider.GetRequiredService<IUserService>();
-        var clock = scope.ServiceProvider.GetRequiredService<IClock>();
-        var dbContext = scope.ServiceProvider.GetRequiredService<IDbContext>();
-        var authOptions = scope.ServiceProvider.GetRequiredService<AuthOptions>();
-        var requestStorage = scope.ServiceProvider.GetRequiredService<IRequestStorage>();
-        var authManager = scope.ServiceProvider.GetRequiredService<IAuthManager>();
-
-        var user = await userService.GetUserByUsernameFullAsync(request.Username, cancellationToken);
+        var user = await _userService.GetUserByUsernameFullAsync(request.Username, cancellationToken);
         if (user?.Password is null)
-            return Result.Failure<JsonWebToken>(IdentityErrors.InvalidUsernameAndPassword);
+            return Result.Failure<JsonWebToken>(Error.Create("ExSI001", "Invalid username or password."));
 
-        if (!userService.VerifyPassword(user.Password!, request.Password))
-            return Result.Failure<JsonWebToken>(IdentityErrors.InvalidUsernameAndPassword);
+        if (!_userService.VerifyPassword(user.Password!, request.Password))
+            return Result.Failure<JsonWebToken>(Error.Create("ExSI001", "Invalid username or password."));
 
         var refreshToken = Guid.NewGuid().ToString("N");
 
@@ -32,24 +38,24 @@ public sealed class SignInCommandHandler : ICommandHandler<SignInCommand, Result
             UserId = user.UserId,
             ClientId = request.ClientId,
             RefreshToken = refreshToken,
-            ExpiryAt = clock.CurrentDate().Add(authOptions.RefreshTokenExpiry),
+            ExpiryAt = _clock.CurrentDate().Add(_authOptions.RefreshTokenExpiry),
             DeviceType = request.GetDeviceType()
         };
 
-        dbContext.Set<UserToken>().Add(newUserToken);
+        _dbContext.Set<UserToken>().Add(newUserToken);
 
-        await dbContext.SaveChangesAsync(cancellationToken);
+        await _dbContext.SaveChangesAsync(cancellationToken);
 
-        requestStorage.Set($"{user.UserId}{request.ClientId}",
+        _requestStorage.Set($"{user.UserId}{request.ClientId}",
             new UserIdentifier
             {
                 UserId = user.UserId, IdentifierId = refreshToken,
                 LastChangePassword = user.LastPasswordChangeAt!.Value, TokenId = newUserToken.UserTokenId.ToString()
-            }, authOptions.Expiry);
+            }, _authOptions.Expiry);
 
         var claims = Extensions.GenerateCustomClaims(user, request.GetDeviceType());
 
-        var jwt = authManager.CreateToken(user.UserId, request.ClientId, refreshToken,
+        var jwt = _authManager.CreateToken(user.UserId, request.ClientId, refreshToken,
             newUserToken.UserTokenId.ToString(), role: null, audience: null,
             claims: claims);
 

@@ -1,6 +1,6 @@
 ﻿namespace BoilerPlate.Core.Identity.Commands.SignIn;
 
-public sealed class SignInCommand : ICommand<Result<JsonWebToken>>
+public sealed record SignInCommand : ICommand<Result<JsonWebToken>>
 {
     public SignInCommand()
     {
