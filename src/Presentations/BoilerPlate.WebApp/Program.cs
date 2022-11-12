@@ -3,6 +3,7 @@ using BoilerPlate.WebApp;
 var builder = WebApplication.CreateBuilder(args);
 
 // Inject services
+builder.Services.AddHttpClient();
 builder.Services.AddApplicationOptions();
 
 // Add services to the container.
