@@ -8,12 +8,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BoilerPlate.IntegrationTests.Fixtures;
 
-public class SqlServerDatabaseFixture : IDisposable
+public class DatabaseFixture : IDisposable
 {
     public readonly IDbContext DbContext;
     private readonly SqlServerDbContext _db;
 
-    public SqlServerDatabaseFixture()
+    public DatabaseFixture()
     {
         var options = new DbContextOptionsBuilder<SqlServerDbContext>()
             .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())

@@ -6,13 +6,13 @@ using Shouldly;
 
 namespace BoilerPlate.IntegrationTests.Services;
 
-[Collection("SqlServerDatabase")]
-public class UserServiceTests : IClassFixture<SqlServerDatabaseFixture>
+[Collection(Constant.DatabaseCollectionDefaultName)]
+public class UserServiceTests : IClassFixture<DatabaseFixture>
 {
     private readonly UserService _service;
     private readonly IDbContext _dbContext;
 
-    public UserServiceTests(SqlServerDatabaseFixture fixture)
+    public UserServiceTests(DatabaseFixture fixture)
     {
         _dbContext = fixture.DbContext;
         _service = new UserService(fixture.DbContext);
@@ -34,8 +34,8 @@ public class UserServiceTests : IClassFixture<SqlServerDatabaseFixture>
         await _dbContext.SaveChangesAsync(CancellationToken.None);
 
         var result = await _service.GetUserByIdAsync(user.UserId, CancellationToken.None);
-        result.ShouldNotBeNull();
-        result.Username.ShouldBe(user.Username);
+        result.ShouldNotBe(null);
+        result!.Username.ShouldBe(user.Username);
         result.NormalizedUsername.ShouldBe(user.NormalizedUsername);
         result.FullName.ShouldBe(user.FullName);
     }
@@ -63,6 +63,6 @@ public class UserServiceTests : IClassFixture<SqlServerDatabaseFixture>
     public async Task TestUserServiceGetDataAdministratorShouldNotBeNull()
     {
         var result = await _service.GetUserByIdAsync(Guid.Empty, CancellationToken.None);
-        result.ShouldNotBeNull();
+        result.ShouldNotBe(null);
     }
 }
