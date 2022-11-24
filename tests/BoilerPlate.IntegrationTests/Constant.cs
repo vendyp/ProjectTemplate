@@ -1,6 +1,6 @@
 namespace BoilerPlate.IntegrationTests;
 
-public class Constant
+internal class Constant
 {
-    public const string DatabaseCollectionDefaultName = "DefaultDatabaseCollection";
+    public const string ServiceCollectionDefaultName = "DefaultDatabaseCollection";
 }
