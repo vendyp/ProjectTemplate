@@ -8,6 +8,7 @@ using BoilerPlate.Shared.Abstraction.Auth;
 using BoilerPlate.Shared.Abstraction.Databases;
 using BoilerPlate.Shared.Abstraction.Encryption;
 using BoilerPlate.Shared.Abstraction.Time;
+using BoilerPlate.Shared.Infrastructure.Auth;
 using BoilerPlate.Shared.Infrastructure.Storage;
 using BoilerPlate.UnitTests.Mocks;
 using Microsoft.AspNetCore.Identity;
@@ -28,10 +29,10 @@ public class ServiceFixture : IDisposable
             .Options;
 
         _db = new SqlServerDbContext(options, new ContextBuilder().Build().Object,
-            new ClockBuilder().Build().Object);
+            new Clock());
 
         var appInit =
-            new DomainInitializer(_db, new PasswordHasher<User>(), new ClockBuilder().Build().Object);
+            new DomainInitializer(_db, new PasswordHasher<User>(), new Clock());
         appInit.ExecuteAsync(CancellationToken.None).GetAwaiter().GetResult();
 
         var services = new Microsoft.Extensions.DependencyInjection.ServiceCollection();
@@ -50,6 +51,8 @@ public class ServiceFixture : IDisposable
             .AddSingleton<IMd5, Md5>()
             .AddSingleton<IRng, Rng>();
         services.AddMemoryRequestStorage();
+        services.AddSingleton(new AuthOptions
+            { Expiry = new TimeSpan(7, 0, 0), RefreshTokenExpiry = new TimeSpan(7, 0, 0, 0) });
 
         ServiceProvider = services.BuildServiceProvider();
     }
