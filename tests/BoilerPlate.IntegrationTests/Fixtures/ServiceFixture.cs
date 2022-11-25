@@ -6,6 +6,7 @@ using BoilerPlate.IntegrationTests.Dependencies;
 using BoilerPlate.Persistence;
 using BoilerPlate.Shared.Abstraction.Auth;
 using BoilerPlate.Shared.Abstraction.Databases;
+using BoilerPlate.Shared.Abstraction.Encryption;
 using BoilerPlate.Shared.Abstraction.Time;
 using BoilerPlate.Shared.Infrastructure.Storage;
 using BoilerPlate.UnitTests.Mocks;
@@ -42,6 +43,12 @@ public class ServiceFixture : IDisposable
         services.AddScoped<IUserService, UserService>();
         services.AddSingleton<IClock, Clock>();
         services.AddSingleton<IAuthManager, AuthManager>();
+        services
+            .AddSingleton<ISecurityProvider, SecurityProvider>()
+            .AddSingleton<IEncryptor, Encryptor>()
+            .AddSingleton<IHasher, Hasher>()
+            .AddSingleton<IMd5, Md5>()
+            .AddSingleton<IRng, Rng>();
         services.AddMemoryRequestStorage();
 
         ServiceProvider = services.BuildServiceProvider();
