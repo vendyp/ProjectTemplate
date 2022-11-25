@@ -24,8 +24,8 @@ internal sealed class ChangePasswordCommandHandler : ICommandHandler<ChangePassw
         if (user is null || user.Password is null)
             return Result.Failure(Error.Create("ExCP001", "User not found."));
 
-        if (_userService.VerifyPassword(user.Password!, request.NewPassword))
-            return Result.Failure(Error.Create("ExCP002", "Password is same as before."));
+        if (!_userService.VerifyPassword(user.Password!, request.CurrentPassword))
+            return Result.Failure(Error.Create("ExCP002", "Invalid password."));
 
         user.Password = _userService.HashPassword(request.NewPassword);
         user.LastPasswordChangeAt = _clock.CurrentDate();

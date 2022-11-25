@@ -1,7 +1,12 @@
 ﻿using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Security.Claims;
 using BoilerPlate.Core.Behaviours;
 using Microsoft.AspNetCore.Identity;
+
+[assembly: InternalsVisibleTo("BoilerPlate.FunctionalTests")]
+[assembly: InternalsVisibleTo("BoilerPlate.IntegrationTests")]
+[assembly: InternalsVisibleTo("BoilerPlate.UnitTests")]
 
 namespace BoilerPlate.Core;
 
