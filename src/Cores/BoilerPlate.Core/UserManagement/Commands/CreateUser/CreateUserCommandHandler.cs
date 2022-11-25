@@ -27,6 +27,7 @@ public sealed class CreateUserCommandHandler : ICommandHandler<CreateUserCommand
         user = new User
         {
             Username = request.Username.ToLower(),
+            NormalizedUsername = request.NormalizedUsername,
             FullName = request.Fullname,
             Password = _passwordHasher.HashPassword(default!, request.Password)
         };

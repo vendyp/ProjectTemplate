@@ -1,21 +1,24 @@
 ﻿using BoilerPlate.Domain.Entities;
 using BoilerPlate.Infrastructure.Services;
 using BoilerPlate.IntegrationTests.Fixtures;
+using BoilerPlate.Persistence;
 using BoilerPlate.Shared.Abstraction.Databases;
+using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
 
 namespace BoilerPlate.IntegrationTests.Services;
 
-[Collection("SqlServerDatabase")]
-public class UserServiceTests : IClassFixture<SqlServerDatabaseFixture>
+[Collection(Constant.ServiceCollectionDefaultName)]
+public class UserServiceTests : IClassFixture<ServiceFixture>
 {
     private readonly UserService _service;
     private readonly IDbContext _dbContext;
 
-    public UserServiceTests(SqlServerDatabaseFixture fixture)
+    public UserServiceTests(ServiceFixture fixture)
     {
-        _dbContext = fixture.DbContext;
-        _service = new UserService(fixture.DbContext);
+        var db = fixture.ServiceProvider.GetRequiredService<SqlServerDbContext>();
+        _service = new UserService(db);
+        _dbContext = db;
     }
 
     [Fact]
@@ -34,8 +37,8 @@ public class UserServiceTests : IClassFixture<SqlServerDatabaseFixture>
         await _dbContext.SaveChangesAsync(CancellationToken.None);
 
         var result = await _service.GetUserByIdAsync(user.UserId, CancellationToken.None);
-        result.ShouldNotBeNull();
-        result.Username.ShouldBe(user.Username);
+        result.ShouldNotBe(null);
+        result!.Username.ShouldBe(user.Username);
         result.NormalizedUsername.ShouldBe(user.NormalizedUsername);
         result.FullName.ShouldBe(user.FullName);
     }
@@ -63,6 +66,6 @@ public class UserServiceTests : IClassFixture<SqlServerDatabaseFixture>
     public async Task TestUserServiceGetDataAdministratorShouldNotBeNull()
     {
         var result = await _service.GetUserByIdAsync(Guid.Empty, CancellationToken.None);
-        result.ShouldNotBeNull();
+        result.ShouldNotBe(null);
     }
 }
