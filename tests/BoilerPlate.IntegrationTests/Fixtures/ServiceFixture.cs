@@ -1,6 +1,13 @@
-﻿using BoilerPlate.Domain.Entities;
+﻿using BoilerPlate.Core.Abstractions;
+using BoilerPlate.Domain.Entities;
 using BoilerPlate.Domain.Services;
+using BoilerPlate.Infrastructure.Services;
+using BoilerPlate.IntegrationTests.Dependencies;
 using BoilerPlate.Persistence;
+using BoilerPlate.Shared.Abstraction.Auth;
+using BoilerPlate.Shared.Abstraction.Databases;
+using BoilerPlate.Shared.Abstraction.Time;
+using BoilerPlate.Shared.Infrastructure.Storage;
 using BoilerPlate.UnitTests.Mocks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -29,9 +36,13 @@ public class ServiceFixture : IDisposable
         var services = new Microsoft.Extensions.DependencyInjection.ServiceCollection();
         services.AddDbContext<SqlServerDbContext>(e =>
             e.UseInMemoryDatabase(Guid.NewGuid().ToString()));
+        services.AddScoped<IDbContext>(serviceProvider => serviceProvider.GetRequiredService<SqlServerDbContext>());
         services.AddSingleton(_db);
         services.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
-        services.AddIntegrationTestingServices();
+        services.AddScoped<IUserService, UserService>();
+        services.AddSingleton<IClock, Clock>();
+        services.AddSingleton<IAuthManager, AuthManager>();
+        services.AddMemoryRequestStorage();
 
         ServiceProvider = services.BuildServiceProvider();
     }

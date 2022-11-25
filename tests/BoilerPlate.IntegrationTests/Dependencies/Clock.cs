@@ -2,7 +2,7 @@ using BoilerPlate.Shared.Abstraction.Time;
 
 namespace BoilerPlate.IntegrationTests.Dependencies;
 
-public class Clock : IClock
+internal class Clock : IClock
 {
     public DateTime CurrentDate() => DateTime.UtcNow;
 
