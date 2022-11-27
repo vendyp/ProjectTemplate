@@ -1,0 +1,70 @@
+@page "/identity/login"
+@using System.ComponentModel
+@using System.ComponentModel.DataAnnotations
+@using Microsoft.AspNetCore.Components.Forms
+@using System.Text.Json
+
+<GridRow Justify="center" Align="middle" Style="height: 100% !important; background: rgba(107,122,141,0.53)">
+    <GridCol Span="7">
+        <Card Title="Log in" Size="default">
+            <Body>
+            <Form Model="@_model"
+                  OnFinish="OnFinish"
+                  OnFinishFailed="OnFinishFailed"
+                  LabelColSpan="8"
+                  WrapperColSpan="16">
+                <FormItem>
+                    <Input @bind-Value="@context.Username"/>
+                </FormItem>
+                <FormItem Label="Password">
+                    <InputPassword @bind-Value="@context.Password"/>
+                </FormItem>
+                <FormItem WrapperColOffset="8" WrapperColSpan="16">
+                    <Button Type="@ButtonType.Primary" HtmlType="submit" Loading="ButtonLoading">
+                        Submit
+                    </Button>
+                </FormItem>
+            </Form>
+            </Body>
+        </Card>
+    </GridCol>
+</GridRow>
+
+@code {
+
+    public class Model
+    {
+        [Required, DisplayName("Username"), StringLength(100)]
+        public string? Username { get; set; }
+
+        [Required, StringLength(128)]
+        public string? Password { get; set; }
+    }
+
+    private readonly Model _model = new();
+
+    private bool ButtonLoading { get; set; }
+
+    private async Task OnFinish(EditContext editContext)
+    {
+        ButtonLoading = true;
+
+        await Task.Delay(3000);
+
+        ButtonLoading = false;
+
+        Console.WriteLine($"Success:{JsonSerializer.Serialize(_model)}");
+    }
+
+    private async Task OnFinishFailed(EditContext editContext)
+    {
+        ButtonLoading = true;
+
+        await Task.Delay(3000);
+
+        ButtonLoading = false;
+
+        Console.WriteLine($"Failed:{JsonSerializer.Serialize(_model)}");
+    }
+
+}
