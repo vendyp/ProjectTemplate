@@ -28,6 +28,7 @@ builder.Services.AddContext();
 builder.Services.AddApplicationInitializer();
 builder.Services.AddLogging();
 builder.Services.AddSecurity();
+builder.Services.AddCorsPolicy();
 // end services to the container.
 
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
