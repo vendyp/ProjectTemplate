@@ -9,6 +9,6 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddAntDesign();
 builder.Services.AddScoped(_ => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 builder.Services.AddSingleton<IAccountService, AccountService>();
-
+builder.Services.AddIntegrationApi(Constant.GetApiHost(builder.HostEnvironment.Environment)!);
 
 await builder.Build().RunAsync();

@@ -41,12 +41,19 @@
         public string? Password { get; set; }
     }
 
+    [Inject]
+    public IIdentityApi IdentityApi { get; set; } = null!;
+
     private readonly Model _model = new();
 
     private bool ButtonLoading { get; set; }
 
     private async Task OnFinish(EditContext editContext)
     {
+        var results = await IdentityApi.Login(new LoginRequest(Guid.NewGuid().ToString(), _model.Username!, _model.Password!));
+        
+        Console.WriteLine(JsonSerializer.Serialize(results.Content));
+        
         ButtonLoading = true;
 
         await Task.Delay(3000);
