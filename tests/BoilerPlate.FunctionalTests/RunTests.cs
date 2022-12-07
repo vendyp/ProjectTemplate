@@ -1,10 +1,9 @@
 namespace BoilerPlate.FunctionalTests;
 
-public class UnitTest1
+public class RunTests
 {
     [Fact]
-    public void Test1()
+    public void Run()
     {
-
     }
 }
