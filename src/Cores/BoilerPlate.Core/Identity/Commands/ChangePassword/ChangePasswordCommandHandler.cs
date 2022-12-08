@@ -18,10 +18,18 @@ internal sealed class ChangePasswordCommandHandler : ICommandHandler<ChangePassw
         _requestStorage = requestStorage;
     }
 
+    /// <summary>
+    /// Pseudo-code, first get user by user id using <see cref="IUserService"/>,
+    /// then if ForceReLogin is present, then delete all client id from mem-cached,
+    /// and update user token to all used
+    /// </summary>
+    /// <param name="request">See <see cref="ChangePasswordCommand"/></param>
+    /// <param name="cancellationToken">See <see cref="CancellationToken"/></param>
+    /// <returns>See <see cref="Result"/></returns>
     public async ValueTask<Result> Handle(ChangePasswordCommand request, CancellationToken cancellationToken)
     {
         var user = await _userService.GetUserByIdAsync(request.GetUserId(), cancellationToken);
-        if (user is null || user.Password is null)
+        if (user?.Password is null)
             return Result.Failure(Error.Create("ExCP001", "User not found."));
 
         if (!_userService.VerifyPassword(user.Password!, request.CurrentPassword))

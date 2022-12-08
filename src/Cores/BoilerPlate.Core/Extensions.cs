@@ -28,11 +28,30 @@ public static class Extensions
         return claims;
     }
 
+    public static Dictionary<string, IEnumerable<string>> GenerateCustomClaims(string userId,
+        string username,
+        DeviceType deviceType,
+        IEnumerable<string> roles)
+    {
+        var claims = new Dictionary<string, IEnumerable<string>>
+        {
+            ["xid"] = new[] { userId },
+            ["usr"] = new[] { username },
+            ["deviceType"] = new[] { deviceType.ToString() }
+        };
+
+        foreach (var role in roles)
+            claims.Add(ClaimTypes.Role, new[] { role });
+
+        return claims;
+    }
+
     public static void AddCore(this IServiceCollection services)
     {
         services.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
         services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly(), ServiceLifetime.Singleton);
         services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+        services.AddScoped(typeof(IPipelineBehavior<,>), typeof(PerformanceBehavior<,>));
         services.AddMediator(options => options.ServiceLifetime = ServiceLifetime.Scoped);
     }
 }

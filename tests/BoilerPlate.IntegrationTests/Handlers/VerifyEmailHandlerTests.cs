@@ -21,6 +21,7 @@ public class VerifyEmailHandlerTests : IClassFixture<ServiceFixture>
     {
         _serviceProvider = serviceFixture.ServiceProvider;
         _ctor = new VerifyEmailCommandHandler(
+            serviceFixture.ServiceProvider.GetRequiredService<IUserService>(),
             serviceFixture.ServiceProvider.GetRequiredService<IDbContext>(),
             serviceFixture.ServiceProvider.GetRequiredService<IClock>());
     }

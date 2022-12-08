@@ -1,4 +1,4 @@
-﻿namespace BoilerPlate.Core.Contracts;
+﻿namespace BoilerPlate.Core.Responses;
 
 public class MeResponse
 {

@@ -1,4 +1,4 @@
-﻿using BoilerPlate.Core.Contracts;
+﻿using BoilerPlate.Core.Responses;
 
 namespace BoilerPlate.Core.UserManagement.Queries.GetUsers;
 

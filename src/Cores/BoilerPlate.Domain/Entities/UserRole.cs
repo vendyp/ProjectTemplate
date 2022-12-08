@@ -10,6 +10,9 @@ public class UserRole : BaseEntity
     /// </summary>
     public Guid UserId { get; set; }
 
+    /// <summary>
+    /// Primary key of the object
+    /// </summary>
     public string RoleId { get; set; } = null!;
 }
 

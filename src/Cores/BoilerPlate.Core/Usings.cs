@@ -1,4 +1,5 @@
 ﻿global using FluentValidation;
+global using BoilerPlate.Core.Models;
 global using BoilerPlate.Domain.Entities;
 global using BoilerPlate.Domain.Entities.Enums;
 global using BoilerPlate.Domain.Exceptions;

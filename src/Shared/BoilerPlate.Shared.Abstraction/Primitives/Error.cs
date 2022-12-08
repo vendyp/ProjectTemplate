@@ -14,7 +14,15 @@ public sealed class Error : ValueObject
     {
         Code = code;
         Message = message;
+        StatusCode = 400;
     }
+
+    internal Error(int statusCode, string code, string message) : this(code, message)
+    {
+        StatusCode = statusCode;
+    }
+
+    public int StatusCode { get; }
 
     /// <summary>
     /// Gets the error code.
@@ -34,10 +42,26 @@ public sealed class Error : ValueObject
     /// <summary>
     /// Create error instance.
     /// </summary>
-    /// <param name="code"></param>
-    /// <param name="message"></param>
-    /// <returns></returns>
+    /// <param name="message">string</param>
+    /// <returns>See <see cref="Error"/></returns>
+    public static Error Create(string message) => new(string.Empty, message);
+
+    /// <summary>
+    /// Create error instance.
+    /// </summary>
+    /// <param name="code">string</param>
+    /// <param name="message">string</param>
+    /// <returns>See <see cref="Error"/></returns>
     public static Error Create(string code, string message) => new(code, message);
+
+    /// <summary>
+    /// Create error instance.
+    /// </summary>
+    /// <param name="statusCode">int</param>
+    /// <param name="code">string</param>
+    /// <param name="message">string</param>
+    /// <returns>See <see cref="Error"/></returns>
+    public static Error Create(int statusCode, string code, string message) => new(statusCode, code, message);
 
     public static implicit operator string(Error? error) => error?.Code ?? string.Empty;
 

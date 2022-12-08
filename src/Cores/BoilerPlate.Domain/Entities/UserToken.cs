@@ -1,5 +1,4 @@
-﻿using BoilerPlate.Domain.Entities.Enums;
-using BoilerPlate.Shared.Abstraction.Entities;
+﻿using BoilerPlate.Shared.Abstraction.Entities;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace BoilerPlate.Domain.Entities;
@@ -47,8 +46,15 @@ public class UserToken : BaseEntity
     /// </summary>
     public DateTime? UsedAt { get; set; }
 
+    /// <summary>
+    /// Save device type when log in or refresh token scenario.
+    /// </summary>
     public DeviceType DeviceType { get; set; }
 
+    /// <summary>
+    /// Update IsUsed and UsedAt properties.
+    /// </summary>
+    /// <param name="dt">DateTime</param>
     public void UseUserToken(DateTime dt)
     {
         IsUsed = true;

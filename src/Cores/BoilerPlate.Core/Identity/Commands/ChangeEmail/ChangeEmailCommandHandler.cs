@@ -15,6 +15,13 @@ public class ChangeEmailCommandHandler : ICommandHandler<ChangeEmailCommand, Res
         _dbContext = dbContext;
     }
 
+    /// <summary>
+    /// First get user by user id, then check if email is not same as current email,
+    /// then update and also set user email activation status to be requested
+    /// </summary>
+    /// <param name="request">See <see cref="ChangeEmailCommand"/></param>
+    /// <param name="cancellationToken">See <see cref="CancellationToken"/></param>
+    /// <returns>See <see cref="Result"/></returns>
     public async ValueTask<Result> Handle(ChangeEmailCommand request, CancellationToken cancellationToken)
     {
         var user = await _userService.GetUserByIdAsync(request.GetUserId()!.Value, cancellationToken);
@@ -22,7 +29,7 @@ public class ChangeEmailCommandHandler : ICommandHandler<ChangeEmailCommand, Res
         if (user is null)
             return Result.Failure(Error.Create("ExCE001", "User not found."));
 
-        if (user!.Email == request.NewEmail)
+        if (user.Email == request.NewEmail)
             return Result.Failure(Error.Create("ExCE002", "Email same as before."));
 
         user.Email = request.NewEmail;

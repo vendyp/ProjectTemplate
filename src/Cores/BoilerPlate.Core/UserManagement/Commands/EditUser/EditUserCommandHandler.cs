@@ -13,6 +13,12 @@ public class EditUserCommandHandler : ICommandHandler<EditUserCommand, Result>
         _dbContext = dbContext;
     }
 
+    /// <summary>
+    /// First get user object by user id, then update its property based on request.
+    /// </summary>
+    /// <param name="request">See <see cref="EditUserCommand"/></param>
+    /// <param name="cancellationToken">See <see cref="CancellationToken"/></param>
+    /// <returns>See <see cref="Result"/></returns>
     public async ValueTask<Result> Handle(EditUserCommand request, CancellationToken cancellationToken)
     {
         var user = await _userService.GetUserByIdAsync(request.UserId, cancellationToken);

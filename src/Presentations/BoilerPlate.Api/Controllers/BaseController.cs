@@ -1,4 +1,5 @@
 ﻿using BoilerPlate.Shared.Abstraction.Contexts;
+using BoilerPlate.Shared.Abstraction.Queries;
 
 namespace BoilerPlate.Api.Controllers;
 
@@ -32,4 +33,25 @@ public class BaseController : ControllerBase
     /// </summary>
     /// <returns>The created <see cref="NotFoundResult"/> for the response.</returns>
     protected new IActionResult NotFound() => NotFound("The requested resource was not found.");
+
+    protected IActionResult ConstructResult<TValue>(Result<TValue> value)
+        => value.IsSuccess ? base.Ok(value.Value) : ErrorResult(value.Error);
+
+    protected IActionResult ConstructResult(Result value)
+        => value.IsSuccess ? base.NoContent() : ErrorResult(value.Error);
+
+    protected IActionResult ConstructResult<TValue>(PagedList<TValue> value)
+        => Ok(value);
+
+    private IActionResult ErrorResult(Error error)
+    {
+        var err = error.StatusCode;
+
+        return err switch
+        {
+            400 => base.BadRequest(error),
+            404 => NotFound(),
+            _ => StatusCode(500, error)
+        };
+    }
 }

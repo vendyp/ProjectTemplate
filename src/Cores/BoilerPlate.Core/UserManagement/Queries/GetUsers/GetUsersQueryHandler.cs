@@ -1,5 +1,5 @@
 ﻿using System.Linq.Dynamic.Core;
-using BoilerPlate.Core.Contracts;
+using BoilerPlate.Core.Responses;
 
 namespace BoilerPlate.Core.UserManagement.Queries.GetUsers;
 
@@ -25,22 +25,20 @@ public sealed class GetUsersQueryHandler : IQueryHandler<GetUsersQuery, PagedLis
         if (request.OrderBy.IsNotNullOrWhiteSpace())
             queryable = queryable.OrderBy(request.OrderBy);
 
-        var projection = queryable.Select(e => new UserResponse
-        {
-            UserId = e.UserId,
-            Username = e.Username,
-            FullName = e.FullName,
-            UserState = e.UserState,
-            CreatedAt = e.CreatedAt,
-            CreatedAtServer = e.CreatedAtServer
-        }).AsQueryable();
-
-        var users = await projection
+        var users = await queryable.Select(e => new UserResponse
+            {
+                UserId = e.UserId,
+                Username = e.Username,
+                FullName = e.FullName,
+                UserState = e.UserState,
+                CreatedAt = e.CreatedAt,
+                CreatedAtServer = e.CreatedAtServer
+            })
             .Skip(request.CalculateSkip())
             .Take(request.Size)
             .ToListAsync(cancellationToken);
 
-        var totalCount = await projection.LongCountAsync(cancellationToken);
+        var totalCount = await queryable.LongCountAsync(cancellationToken);
 
         var response = new PagedList<UserResponse>(users, totalCount, request.Page, request.Size);
 

@@ -28,7 +28,8 @@ public class RefreshTokenHandlerTests : IClassFixture<ServiceFixture>
             _serviceProvider.GetRequiredService<IDbContext>(),
             _serviceProvider.GetRequiredService<AuthOptions>(),
             _serviceProvider.GetRequiredService<IRequestStorage>(),
-            _serviceProvider.GetRequiredService<IAuthManager>());
+            _serviceProvider.GetRequiredService<IAuthManager>(),
+            _serviceProvider.GetRequiredService<IUserService>());
     }
 
     /// <summary>

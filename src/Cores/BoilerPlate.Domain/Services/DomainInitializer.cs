@@ -1,6 +1,4 @@
-﻿using BoilerPlate.Domain.Entities;
-using BoilerPlate.Domain.Entities.Enums;
-using BoilerPlate.Shared.Abstraction.Databases;
+﻿using BoilerPlate.Shared.Abstraction.Databases;
 using BoilerPlate.Shared.Abstraction.Time;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;

@@ -1,4 +1,5 @@
 ﻿using BoilerPlate.Core.Abstractions;
+using BoilerPlate.Core.Models;
 using BoilerPlate.Domain.Entities;
 using BoilerPlate.Shared.Abstraction.Databases;
 using Microsoft.AspNetCore.Identity;
@@ -22,11 +23,18 @@ internal class UserService : IUserService
         _passwordHasher = passwordHasher;
     }
 
+    public IQueryable<User> GetBaseQueryWithoutInclude()
+        => _dbContext.Set<User>().AsQueryable();
+
     public IQueryable<User> GetBaseQuery()
         => _dbContext.Set<User>().Include(e => e.UserRoles).AsQueryable();
 
     public Task<User?> GetUserByIdAsync(Guid userId, CancellationToken cancellationToken)
         => GetBaseQuery().Where(e => e.UserId == userId).FirstOrDefaultAsync(cancellationToken);
+
+    public Task<User?> GetUserByEmailActivationCodeAsync(string code, CancellationToken cancellationToken)
+        => GetBaseQuery().Where(e => e.EmailActivationCode == code)
+            .FirstOrDefaultAsync(cancellationToken);
 
     public Task<User?> GetUserByUsernameAsync(string username, CancellationToken cancellationToken)
     {
@@ -50,6 +58,26 @@ internal class UserService : IUserService
             .Include(e => e.UserRoles)
             .Where(e => e.UserId == userId)
             .FirstOrDefaultAsync(cancellationToken);
+
+    public async Task<UserCompactForLoginModel?> GetUserCompactForLoginAsync(Guid userId,
+        CancellationToken cancellationToken)
+    {
+        var result = await GetBaseQuery()
+            .Where(e => e.UserId == userId)
+            .Select(e => new UserCompactForLoginModel
+            {
+                UserId = e.UserId,
+                Username = e.Username,
+                LastPasswordChangeAt = e.LastPasswordChangeAt
+            })
+            .FirstOrDefaultAsync(cancellationToken);
+        if (result is null) return null;
+
+        result.Roles = await _dbContext.Set<UserRole>().Where(e => e.UserId == userId).Select(e => e.RoleId)
+            .ToArrayAsync(cancellationToken);
+
+        return result;
+    }
 
     public bool VerifyPassword(string currentPassword, string password)
         => _passwordHasher?.VerifyHashedPassword(default!, currentPassword, password) ==
