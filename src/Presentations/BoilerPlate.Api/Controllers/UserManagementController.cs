@@ -1,4 +1,4 @@
-﻿using BoilerPlate.Core.Contracts;
+﻿using BoilerPlate.Core.Responses;
 using BoilerPlate.Core.UserManagement.Commands.ChangePasswordUser;
 using BoilerPlate.Core.UserManagement.Commands.CreateUser;
 using BoilerPlate.Core.UserManagement.Commands.EditUser;
@@ -36,10 +36,7 @@ public sealed class UserManagementController : BaseController
     [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CreateUserAsync([FromBody] CreateUserCommand command,
         CancellationToken cancellationToken)
-    {
-        var result = await Sender.Send(command, cancellationToken);
-        return result.IsSuccess ? Ok() : BadRequest(result.Error);
-    }
+        => ConstructResult(await Sender.Send(command, cancellationToken));
 
     /// <summary>
     /// Edit User API
@@ -52,10 +49,7 @@ public sealed class UserManagementController : BaseController
     [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> EditUserAsync([FromBody] EditUserCommand command,
         CancellationToken cancellationToken)
-    {
-        var result = await Sender.Send(command, cancellationToken);
-        return result.IsSuccess ? Ok() : BadRequest(result.Error);
-    }
+        => ConstructResult(await Sender.Send(command, cancellationToken));
 
     /// <summary>
     /// Change Password User API
@@ -68,10 +62,7 @@ public sealed class UserManagementController : BaseController
     [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> ChangePasswordUserAsync([FromBody] ChangePasswordUserCommand command,
         CancellationToken cancellationToken)
-    {
-        var result = await Sender.Send(command, cancellationToken);
-        return result.IsSuccess ? Ok() : BadRequest(result.Error);
-    }
+        => ConstructResult(await Sender.Send(command, cancellationToken));
 
     /// <summary>
     /// Get Users API
@@ -90,8 +81,8 @@ public sealed class UserManagementController : BaseController
         string? fullName,
         int page,
         int pageSize,
-        string orderBy) =>
-        Ok(await Sender.Send(new GetUsersQuery(page, pageSize, orderBy, fullName, username)));
+        string orderBy)
+        => ConstructResult(await Sender.Send(new GetUsersQuery(page, pageSize, orderBy, fullName, username)));
 
     /// <summary>
     /// Get User by Id API
@@ -106,7 +97,6 @@ public sealed class UserManagementController : BaseController
         [FromRoute] Guid id, CancellationToken cancellationToken)
     {
         var query = new GetUserByIdQuery(id);
-        var result = await Sender.Send(query, cancellationToken);
-        return result.HasValue ? Ok(result.Value) : NotFound();
+        return ConstructResult(await Sender.Send(query, cancellationToken));
     }
 }

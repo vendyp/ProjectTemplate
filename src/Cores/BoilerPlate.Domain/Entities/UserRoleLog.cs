@@ -1,5 +1,4 @@
-﻿using BoilerPlate.Domain.Entities.Enums;
-using BoilerPlate.Shared.Abstraction.Entities;
+﻿using BoilerPlate.Shared.Abstraction.Entities;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace BoilerPlate.Domain.Entities;

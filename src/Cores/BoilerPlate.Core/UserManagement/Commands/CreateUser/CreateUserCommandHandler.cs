@@ -18,6 +18,13 @@ public sealed class CreateUserCommandHandler : ICommandHandler<CreateUserCommand
         _dbContext = dbContext;
     }
 
+    /// <summary>
+    /// First get user object by username, if exists or not null, throws error, then
+    /// create new object user and save to database
+    /// </summary>
+    /// <param name="request">See <see cref="CreateUserCommand"/></param>
+    /// <param name="cancellationToken">See <see cref="CancellationToken"/></param>
+    /// <returns>See <see cref="Result"/></returns>
     public async ValueTask<Result> Handle(CreateUserCommand request, CancellationToken cancellationToken)
     {
         var user = await _userService.GetUserByUsernameAsync(request.NormalizedUsername, cancellationToken);

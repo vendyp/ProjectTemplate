@@ -11,34 +11,32 @@ namespace BoilerPlate.Api.Controllers;
 public sealed class IdentityController : BaseController
 {
     /// <summary>
-    /// Sign In API
+    /// Sign In API.
+    /// This API generally requires username, and password.
+    /// Client Id is used for tracking user behavior and its rate limiting,
+    /// also device type is used for identify user log in, using which User Agent.
     /// </summary>
-    /// <param name="request"></param>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
+    /// <param name="request">See <see cref="SignInCommand"/></param>
+    /// <param name="cancellationToken">CancellationToken see <see cref="CancellationToken"/></param>
+    /// <returns>Produces <see cref="BoilerPlate.Shared.Abstraction.Auth.JsonWebToken"/></returns>
     [HttpPost("sign-in")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> SignInAsync([FromBody] SignInCommand request, CancellationToken cancellationToken)
-    {
-        var result = await Sender.Send(request, cancellationToken);
-        return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
-    }
+        => ConstructResult(await Sender.Send(request, cancellationToken));
 
     /// <summary>
-    /// Get Me API
+    /// Get Me API.
+    /// This API produces information for the user
     /// </summary>
     /// <param name="cancellationToken"></param>
-    /// <returns></returns>
+    /// <returns>Produces <see cref="BoilerPlate.Core.Responses.MeResponse"/></returns>
     [HttpGet("me")]
     [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetMeAsync(CancellationToken cancellationToken)
-    {
-        var result = await Sender.Send(new GetMeQuery { UserId = Context!.Identity.Id }, cancellationToken);
-        return result.HasValue ? Ok(result.Value!) : BadRequest();
-    }
+        => ConstructResult(await Sender.Send(new GetMeQuery { UserId = Context!.Identity.Id }, cancellationToken));
 
     /// <summary>
     /// Change Password User API
@@ -54,8 +52,7 @@ public sealed class IdentityController : BaseController
         CancellationToken cancellationToken)
     {
         command.SetUserId(Context!.Identity.Id);
-        var result = await Sender.Send(command, cancellationToken);
-        return result.IsSuccess ? Ok() : BadRequest();
+        return ConstructResult(await Sender.Send(command, cancellationToken));
     }
 
     /// <summary>
@@ -69,10 +66,7 @@ public sealed class IdentityController : BaseController
     [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> RefreshTokenAsync([FromBody] RefreshTokenCommand command,
         CancellationToken cancellationToken)
-    {
-        var result = await Sender.Send(command, cancellationToken);
-        return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
-    }
+        => ConstructResult(await Sender.Send(command, cancellationToken));
 
     /// <summary>
     /// Change Email API
@@ -88,8 +82,7 @@ public sealed class IdentityController : BaseController
         CancellationToken cancellationToken)
     {
         command.SetUserId(Context!.Identity.Id);
-        var result = await Sender.Send(command, cancellationToken);
-        return result.IsSuccess ? Ok(result) : BadRequest(result.Error);
+        return ConstructResult(await Sender.Send(command, cancellationToken));
     }
 
     /// <summary>
@@ -105,7 +98,6 @@ public sealed class IdentityController : BaseController
         CancellationToken cancellationToken)
     {
         var command = new VerifyEmailCommand { Code = code };
-        var result = await Sender.Send(command, cancellationToken);
-        return result.IsSuccess ? Ok() : BadRequest(result.Error);
+        return ConstructResult(await Sender.Send(command, cancellationToken));
     }
 }

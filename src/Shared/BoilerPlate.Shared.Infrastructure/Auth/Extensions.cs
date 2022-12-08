@@ -111,7 +111,7 @@ public static class Extensions
 
                         if (userIdentifier is null) return Task.CompletedTask;
 
-                        if (idd.Value != userIdentifier!.TokenId) context.Fail("Invalid");
+                        if (idd.Value != userIdentifier.TokenId) context.Fail("Invalid");
 
                         return Task.CompletedTask;
                     }

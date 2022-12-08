@@ -9,22 +9,34 @@ public class RefreshTokenCommandHandler : ICommandHandler<RefreshTokenCommand, R
     private readonly AuthOptions _authOptions;
     private readonly IRequestStorage _requestStorage;
     private readonly IAuthManager _authManager;
+    private readonly IUserService _userService;
 
     public RefreshTokenCommandHandler(IClock clock, IDbContext dbContext,
-        AuthOptions authOptions, IRequestStorage requestStorage, IAuthManager authManager)
+        AuthOptions authOptions, IRequestStorage requestStorage, IAuthManager authManager, IUserService userService)
     {
         _clock = clock;
         _dbContext = dbContext;
         _authOptions = authOptions;
         _requestStorage = requestStorage;
         _authManager = authManager;
+        _userService = userService;
     }
 
+    /// <summary>
+    /// Pseudo-code
+    /// 1. Get UserToken by params
+    /// 2. Create new user token and refresh token
+    /// 3. Database logic
+    /// 4. Add to mem cached
+    /// 5. Return
+    /// </summary>
+    /// <param name="request">See <see cref="RefreshTokenCommand"/></param>
+    /// <param name="cancellationToken">See <see cref="CancellationToken"/></param>
+    /// <returns>type of <see cref="Result{TValue}"/> with value of <see cref="JsonWebToken"/></returns>
     public async ValueTask<Result<JsonWebToken>> Handle(RefreshTokenCommand request,
         CancellationToken cancellationToken)
     {
         var userToken = await _dbContext.Set<UserToken>()
-            .Include(e => e.User)
             .Where(e => e.ClientId == request.ClientId && e.RefreshToken == request.RefreshToken)
             .FirstOrDefaultAsync(cancellationToken);
 
@@ -48,7 +60,7 @@ public class RefreshTokenCommandHandler : ICommandHandler<RefreshTokenCommand, R
 
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-        var user = userToken.User!;
+        var user = (await _userService.GetUserCompactForLoginAsync(userToken.UserId, cancellationToken))!;
 
         _requestStorage.Set($"{userToken.UserId}{request.ClientId}",
             new UserIdentifier
@@ -58,7 +70,8 @@ public class RefreshTokenCommandHandler : ICommandHandler<RefreshTokenCommand, R
                 TokenId = newUserToken.UserTokenId.ToString()
             }, _authOptions.Expiry);
 
-        var claims = Extensions.GenerateCustomClaims(user, userToken.DeviceType);
+        var claims =
+            Extensions.GenerateCustomClaims(user.UserId.ToString(), user.Username, userToken.DeviceType, user.Roles);
 
         var jwt = _authManager.CreateToken(user.UserId, request.ClientId, refreshToken,
             newUserToken.UserTokenId.ToString(), role: null,
@@ -68,6 +81,6 @@ public class RefreshTokenCommandHandler : ICommandHandler<RefreshTokenCommand, R
         //jwt claims clear, for result only
         jwt.Claims.Clear();
 
-        return Result.Create(jwt, null!);
+        return Result.Success(jwt);
     }
 }

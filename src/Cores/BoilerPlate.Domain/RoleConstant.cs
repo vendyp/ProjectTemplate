@@ -2,7 +2,7 @@
 
 public static class RoleConstant
 {
-    public static Dictionary<string, string> Dictionary = new()
+    public static readonly Dictionary<string, string> Dictionary = new()
     {
         { Administrator, "Administrator" },
         { User, "User" }

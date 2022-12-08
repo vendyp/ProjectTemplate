@@ -1,5 +1,4 @@
-﻿using BoilerPlate.Domain.Entities.Enums;
-using BoilerPlate.Domain.ValueObjects;
+﻿using BoilerPlate.Domain.ValueObjects;
 using BoilerPlate.Shared.Abstraction.Entities;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -18,61 +17,91 @@ public class User : BaseEntity
     }
 
     /// <summary>
-    /// Primary key of the object
+    /// Primary key of the object.
     /// </summary>
     public Guid UserId { get; set; }
 
     /// <summary>
-    /// Username of user, most likely it is email
+    /// Username of user, most likely it is email.
     /// </summary>
     public string Username { get; set; } = null!;
 
     /// <summary>
-    /// Store uppercase value of Username
+    /// Store uppercase value of Username.
     /// </summary>
     public string NormalizedUsername { get; set; } = null!;
 
     /// <summary>
-    /// Password hashed with IPasswordHasher
+    /// Password hashed with IPasswordHasher.
     /// </summary>
     public string? Password { get; set; }
 
+    /// <summary>
+    /// last password change datetime, its update when user object first time created if password present,
+    /// also changed by admin or user itself.
+    /// </summary>
     public DateTime? LastPasswordChangeAt { get; set; }
 
     /// <summary>
-    /// Value object of Email
+    /// Value object of Email.
     /// </summary>
     public Email? Email { get; set; }
 
     /// <summary>
-    /// Full name of user
+    /// Full name of user.
     /// </summary>
     public string FullName { get; set; } = null!;
 
     /// <summary>
-    /// Default value is UserState.Active
+    /// Default value is UserState.Active.
     /// </summary>
     public UserState UserState { get; set; }
 
     /// <summary>
-    /// Input using national number, without 0 or + or +_country_code
+    /// Input using national number, without 0 or + or +_country_code.
     /// </summary>
     public string? PhoneNumber { get; set; }
 
+    /// <summary>
+    /// Birth date of user.
+    /// </summary>
     public DateTime? BirthDate { get; set; }
 
+    /// <summary>
+    /// Gender of user <see cref="UserGender"/>.
+    /// </summary>
     public UserGender? Gender { get; set; }
 
+    /// <summary>
+    /// Country name saved to user.
+    /// </summary>
     public string? Country { get; set; }
 
+    /// <summary>
+    /// Containing description of user.
+    /// </summary>
     public string? AboutMe { get; set; }
 
+    /// <summary>
+    /// Containing country code. ex : 62 represent Indonesia.
+    /// </summary>
     public int? CountryCode { get; set; }
 
+    /// <summary>
+    /// This value represent if user needs email activation for certain user case.
+    ///
+    /// Default value is EmailActivationStatus.Skip.
+    /// </summary>
     public EmailActivationStatus EmailActivationStatus { get; set; }
 
+    /// <summary>
+    /// Contains email activation code.
+    /// </summary>
     public string? EmailActivationCode { get; set; }
 
+    /// <summary>
+    /// DateTime when email has activated.
+    /// </summary>
     public DateTime? EmailActivationAt { get; set; }
 
     public ICollection<UserRole> UserRoles { get; }

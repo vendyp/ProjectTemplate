@@ -1,9 +1,9 @@
 ﻿using BoilerPlate.Core.Abstractions;
-using BoilerPlate.Core.Contracts;
+using BoilerPlate.Core.Responses;
 
 namespace BoilerPlate.Core.UserManagement.Queries.GetUserById;
 
-public sealed class GetUserByIdQueryHandler : IQueryHandler<GetUserByIdQuery, Maybe<UserDetailResponse>>
+public sealed class GetUserByIdQueryHandler : IQueryHandler<GetUserByIdQuery, Result<UserDetailResponse>>
 {
     private readonly IUserService _userService;
 
@@ -12,12 +12,12 @@ public sealed class GetUserByIdQueryHandler : IQueryHandler<GetUserByIdQuery, Ma
         _userService = userService;
     }
 
-    public async ValueTask<Maybe<UserDetailResponse>> Handle(GetUserByIdQuery request,
+    public async ValueTask<Result<UserDetailResponse>> Handle(GetUserByIdQuery request,
         CancellationToken cancellationToken)
     {
         var user = await _userService.GetUserByUserIdFullAsync(request.UserId, cancellationToken);
         if (user is null)
-            return Maybe<UserDetailResponse>.None;
+            return Result.Failure<UserDetailResponse>(Error.Create(404, "ExGUI001", "Data user not found."));
 
         var response = new UserDetailResponse(user);
 

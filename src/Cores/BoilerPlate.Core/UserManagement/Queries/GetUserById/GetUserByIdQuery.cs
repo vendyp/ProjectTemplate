@@ -1,8 +1,8 @@
-﻿using BoilerPlate.Core.Contracts;
+﻿using BoilerPlate.Core.Responses;
 
 namespace BoilerPlate.Core.UserManagement.Queries.GetUserById;
 
-public sealed record GetUserByIdQuery : IQuery<Maybe<UserDetailResponse>>
+public sealed record GetUserByIdQuery : IQuery<Result<UserDetailResponse>>
 {
     public GetUserByIdQuery()
     {

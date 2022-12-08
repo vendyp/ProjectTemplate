@@ -2,6 +2,9 @@
 
 namespace BoilerPlate.Core.Identity.Commands.SignIn;
 
+/// <summary>
+/// Handler that handle sign in logic.
+/// </summary>
 public sealed class SignInCommandHandler : ICommandHandler<SignInCommand, Result<JsonWebToken>>
 {
     private readonly IUserService _userService;
@@ -22,6 +25,17 @@ public sealed class SignInCommandHandler : ICommandHandler<SignInCommand, Result
         _authManager = authManager;
     }
 
+    /// <summary>
+    /// Pseudo-code
+    /// 1. Get user by username using <see cref="IUserService"/>
+    /// 2. Verify password using <see cref="IUserService"/>
+    /// 3. Database logic
+    /// 4. Add token to mem-cached
+    /// 5. Return
+    /// </summary>
+    /// <param name="request">See <see cref="SignInCommand"/></param>
+    /// <param name="cancellationToken">See <see cref="CancellationToken"/></param>
+    /// <returns>type of <see cref="Result{TValue}"/> with value of <see cref="JsonWebToken"/></returns>
     public async ValueTask<Result<JsonWebToken>> Handle(SignInCommand request, CancellationToken cancellationToken)
     {
         var user = await _userService.GetUserByUsernameFullAsync(request.Username, cancellationToken);
@@ -62,6 +76,6 @@ public sealed class SignInCommandHandler : ICommandHandler<SignInCommand, Result
         //jwt claims clear, for result only
         jwt.Claims.Clear();
 
-        return Result.Create(jwt, null!);
+        return Result.Success(jwt);
     }
 }

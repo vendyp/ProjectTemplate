@@ -47,7 +47,7 @@ public class Result
     /// Returns a success <see cref="Result"/>.
     /// </summary>
     /// <returns>A new instance of <see cref="Result"/> with the success flag set.</returns>
-    public static Result Success() => new Result(true, Error.None);
+    public static Result Success() => new(true, Error.None);
 
     /// <summary>
     /// Returns a success <see cref="Result{TValue}"/> with the specified value.
@@ -56,17 +56,6 @@ public class Result
     /// <param name="value">The result value.</param>
     /// <returns>A new instance of <see cref="Result{TValue}"/> with the success flag set.</returns>
     public static Result<TValue> Success<TValue>(TValue value) => new(value, true, Error.None);
-
-    /// <summary>
-    /// Creates a new <see cref="Result{TValue}"/> with the specified nullable value and the specified error.
-    /// </summary>
-    /// <typeparam name="TValue">The result type.</typeparam>
-    /// <param name="value">The result value.</param>
-    /// <param name="error">The error in case the value is null.</param>
-    /// <returns>A new instance of <see cref="Result{TValue}"/> with the specified value or an error.</returns>
-    public static Result<TValue> Create<TValue>(TValue? value, Error error)
-        where TValue : class
-        => value is null ? Failure<TValue>(error) : Success(value);
 
     /// <summary>
     /// Returns a failure <see cref="Result"/> with the specified error.
@@ -97,7 +86,7 @@ public class Result
     /// </returns>
     public static Result FirstFailureOrSuccess(params Result[] results)
     {
-        foreach (Result result in results)
+        foreach (var result in results)
         {
             if (result.IsFailure)
             {
