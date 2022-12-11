@@ -56,7 +56,7 @@ public sealed class SignInCommandHandler : ICommandHandler<SignInCommand, Result
             DeviceType = request.GetDeviceType()
         };
 
-        _dbContext.Set<UserToken>().Add(newUserToken);
+        user.UserTokens.Add(newUserToken);
 
         await _dbContext.SaveChangesAsync(cancellationToken);
 
