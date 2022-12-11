@@ -10,7 +10,7 @@ using BoilerPlate.Shared.Abstraction.Encryption;
 using BoilerPlate.Shared.Abstraction.Time;
 using BoilerPlate.Shared.Infrastructure.Auth;
 using BoilerPlate.Shared.Infrastructure.Storage;
-using BoilerPlate.UnitTests.Mocks;
+using BoilerPlate.UnitTests.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,7 +28,7 @@ public class ServiceFixture : IDisposable
             .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
             .Options;
 
-        _db = new SqlServerDbContext(options, new ContextBuilder().Build().Object,
+        _db = new SqlServerDbContext(options, ContextBuilderExtensions.Create().Object,
             new Clock());
 
         var appInit =
