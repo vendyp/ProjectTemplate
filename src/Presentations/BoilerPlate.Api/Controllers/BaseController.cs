@@ -14,14 +14,6 @@ public class BaseController : ControllerBase
     protected IContext? Context => _context ??= HttpContext.RequestServices.GetService<IContext>();
 
     /// <summary>
-    /// Creates an <see cref="BadRequestObjectResult"/> that produces a <see cref="StatusCodes.Status400BadRequest"/>.
-    /// response based on the specified <see cref="Result"/>.
-    /// </summary>
-    /// <param name="error">The error.</param>
-    /// <returns>The created <see cref="BadRequestObjectResult"/> for the response.</returns>
-    protected IActionResult BadRequest(Error error) => BadRequest(new ApiErrorResponse(new[] { error }));
-
-    /// <summary>
     /// Creates an <see cref="OkObjectResult"/> that produces a <see cref="StatusCodes.Status200OK"/>.
     /// </summary>
     /// <param name="value">The value.</param>
@@ -50,6 +42,7 @@ public class BaseController : ControllerBase
         return err switch
         {
             400 => base.BadRequest(error),
+            403 => Forbid(),
             404 => NotFound(),
             _ => StatusCode(500, error)
         };
