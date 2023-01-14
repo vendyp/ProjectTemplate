@@ -1,10 +1,10 @@
-﻿using System.Security.Cryptography;
+using System.Security.Cryptography;
 using System.Text;
 using BoilerPlate.Shared.Abstraction.Encryption;
 
 namespace BoilerPlate.Shared.Infrastructure.Security.Encryption;
 
-internal sealed class Hasher : IHasher
+internal class Sha512 : ISha512
 {
     public string Hash(string data)
     {

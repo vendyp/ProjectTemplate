@@ -31,8 +31,8 @@ public sealed class GetUsersQueryHandler : IQueryHandler<GetUsersQuery, PagedLis
                 Username = e.Username,
                 FullName = e.FullName,
                 UserState = e.UserState,
-                CreatedAt = e.CreatedAt,
-                CreatedAtServer = e.CreatedAtServer
+                CreatedAt = e.CreatedDt,
+                CreatedAtServer = e.CreatedDtServer
             })
             .Skip(request.CalculateSkip())
             .Take(request.Size)

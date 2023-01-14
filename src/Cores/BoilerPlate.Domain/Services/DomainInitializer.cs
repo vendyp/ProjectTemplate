@@ -39,7 +39,7 @@ public class DomainInitializer : IInitializer
             LastPasswordChangeAt = _now,
             FullName = "Administrator",
             UserState = UserState.Active,
-            CreatedAt = _now,
+            CreatedDt = _now,
             CreatedByName = "system"
         }, cancellationToken);
 

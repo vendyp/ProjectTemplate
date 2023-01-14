@@ -38,6 +38,8 @@ public static class Extensions
             .AddSingleton<ISecurityProvider, SecurityProvider>()
             .AddSingleton<IEncryptor, Encryptor>()
             .AddSingleton<IHasher, Hasher>()
+            .AddSingleton<ISha256, Sha256>()
+            .AddSingleton<ISha512, Sha512>()
             .AddSingleton<IMd5, Md5>()
             .AddSingleton<IRng, Rng>();
     }

@@ -51,7 +51,7 @@ internal class CustomExceptionHandlerMiddleware
     /// <returns>The HTTP response that is modified based on the exception.</returns>
     private static async Task HandleExceptionAsync(HttpContext httpContext, Exception exception)
     {
-        (HttpStatusCode httpStatusCode, IReadOnlyCollection<Error> errors) = GetHttpStatusCodeAndErrors(exception);
+        var (httpStatusCode, errors) = GetHttpStatusCodeAndErrors(exception);
 
         httpContext.Response.ContentType = "application/json";
 
@@ -63,7 +63,7 @@ internal class CustomExceptionHandlerMiddleware
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
         };
 
-        string response = JsonSerializer.Serialize(new ApiErrorResponse(errors), serializerOptions);
+        var response = JsonSerializer.Serialize(new ApiErrorResponse(errors), serializerOptions);
 
         await httpContext.Response.WriteAsync(response);
     }

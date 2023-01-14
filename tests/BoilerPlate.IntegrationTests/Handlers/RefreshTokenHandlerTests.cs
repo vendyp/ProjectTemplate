@@ -76,7 +76,7 @@ public class RefreshTokenHandlerTests : IClassFixture<ServiceFixture>
         var result = await _ctor.Handle(refreshTokenCommand, CancellationToken.None);
 
         var userTokens = await dbContext.Set<UserToken>().Where(e => e.UserId == Guid.Empty)
-            .OrderByDescending(e => e.CreatedAt)
+            .OrderByDescending(e => e.CreatedDt)
             .ToListAsync(CancellationToken.None);
         userTokens.Count.ShouldBeGreaterThan(1);
 

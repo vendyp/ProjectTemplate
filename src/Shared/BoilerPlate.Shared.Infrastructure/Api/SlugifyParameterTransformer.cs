@@ -3,10 +3,13 @@ using Microsoft.AspNetCore.Routing;
 
 namespace BoilerPlate.Shared.Infrastructure.Api;
 
-public class SlugifyParameterTransformer : IOutboundParameterTransformer
+public partial class SlugifyParameterTransformer : IOutboundParameterTransformer
 {
     public string? TransformOutbound(object? value)
     {
-        return value is null ? null : Regex.Replace(value.ToString()!, "([a-z])([A-Z])", "$1-$2").ToLower();
+        return value is null ? null : MyRegex().Replace(value.ToString()!, "$1-$2").ToLower();
     }
+
+    [GeneratedRegex("([a-z])([A-Z])")]
+    private static partial Regex MyRegex();
 }

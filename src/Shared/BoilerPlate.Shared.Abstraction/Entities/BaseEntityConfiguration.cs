@@ -10,19 +10,19 @@ public abstract class BaseEntityConfiguration<TBaseEntity> : IEntityTypeConfigur
     {
         builder.Property(e => e.CreatedBy).HasMaxLength(maxLength: 256);
         builder.Property(e => e.CreatedByName).HasMaxLength(maxLength: 256);
-        builder.HasIndex(e => e.CreatedAt);
-        builder.HasIndex(e => e.CreatedAtServer);
+        builder.HasIndex(e => e.CreatedDt);
+        builder.HasIndex(e => e.CreatedDtServer);
 
         builder.Property(e => e.LastUpdatedBy).HasMaxLength(maxLength: 256);
         builder.Property(e => e.LastUpdatedByName).HasMaxLength(maxLength: 256);
-        builder.HasIndex(e => e.LastUpdatedAt);
-        builder.HasIndex(e => e.LastUpdatedAtServer);
+        builder.HasIndex(e => e.LastUpdatedDt);
+        builder.HasIndex(e => e.LastUpdatedDtServer);
 
         builder.Property(e => e.DeletedBy).HasMaxLength(maxLength: 256);
         builder.Property(e => e.DeletedByName).HasMaxLength(maxLength: 256);
-        builder.HasIndex(e => e.DeletedByAt);
+        builder.HasIndex(e => e.DeletedByDt);
 
-        builder.HasQueryFilter(e => e.DeletedByAt == null);
+        builder.HasQueryFilter(e => e.DeletedByDt == null);
 
         EntityConfiguration(builder);
     }

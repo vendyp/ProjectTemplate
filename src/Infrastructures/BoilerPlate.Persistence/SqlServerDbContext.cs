@@ -65,8 +65,8 @@ public class SqlServerDbContext : DbContext, IDbContext
                         entry.Entity.CreatedByName = _context.Identity.Username;
                     }
 
-                    entry.Entity.CreatedAt = _clock.CurrentDate();
-                    entry.Entity.CreatedAtServer = _clock.CurrentServerDate();
+                    entry.Entity.CreatedDt = _clock.CurrentDate();
+                    entry.Entity.CreatedDtServer = _clock.CurrentServerDate();
                     break;
                 }
                 case EntityState.Modified:
@@ -84,13 +84,13 @@ public class SqlServerDbContext : DbContext, IDbContext
                         }
                     }
 
-                    entry.Entity.LastUpdatedAt = _clock.CurrentDate();
-                    entry.Entity.LastUpdatedAtServer = _clock.CurrentServerDate();
+                    entry.Entity.LastUpdatedDt = _clock.CurrentDate();
+                    entry.Entity.LastUpdatedDtServer = _clock.CurrentServerDate();
 
-                    if (entry.Entity.DeletedByAt.HasValue || entry.Entity.DeletedByAtServer.HasValue)
+                    if (entry.Entity.DeletedByDt.HasValue || entry.Entity.DeletedByDtServer.HasValue)
                     {
-                        entry.Entity.DeletedByAt ??= _clock.CurrentDate();
-                        entry.Entity.DeletedByAtServer ??= _clock.CurrentServerDate();
+                        entry.Entity.DeletedByDt ??= _clock.CurrentDate();
+                        entry.Entity.DeletedByDtServer ??= _clock.CurrentServerDate();
 
                         if (contextExist)
                         {

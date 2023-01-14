@@ -104,6 +104,8 @@ public class User : BaseEntity
     /// </summary>
     public DateTime? EmailActivationAt { get; set; }
 
+    public string? RequestId { get; set; }
+
     public ICollection<UserRole> UserRoles { get; }
     public ICollection<UserToken> UserTokens { get; }
 }
@@ -126,5 +128,6 @@ public sealed class UserConfiguration : BaseEntityConfiguration<User>
         builder.Property(e => e.EmailActivationCode).HasMaxLength(1024);
         builder.Property(x => x.Email).HasMaxLength(256)
             .HasConversion(x => x!.Value, x => new Email(x));
+        builder.Property(e => e.RequestId).HasMaxLength(450);
     }
 }

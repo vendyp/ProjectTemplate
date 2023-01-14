@@ -13,7 +13,7 @@ public sealed class GetUsersQuery : BasePagination, IQuery<PagedList<UserRespons
         FullName = fullName;
         Username = username;
 
-        DefaultOrderBy = $"{nameof(User.CreatedAt)}";
+        DefaultOrderBy = $"{nameof(User.CreatedDt)}";
 
         ValidOrderByColumnsDictionary = new Dictionary<string, string?>
         {

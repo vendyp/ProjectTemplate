@@ -12,8 +12,8 @@ public class UserResponse
         Username = user.Username;
         FullName = user.FullName;
         UserState = user.UserState;
-        CreatedAt = user.CreatedAt;
-        CreatedAtServer = user.CreatedAtServer;
+        CreatedAt = user.CreatedDt;
+        CreatedAtServer = user.CreatedDtServer;
     }
 
     public Guid? UserId { get; set; }
