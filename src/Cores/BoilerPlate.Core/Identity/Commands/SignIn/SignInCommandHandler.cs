@@ -43,7 +43,7 @@ public sealed class SignInCommandHandler : ICommandHandler<SignInCommand, Result
             return Result.Failure<JsonWebToken>(Error.Create("ExSI001", "Invalid username or password."));
 
         if (!_userService.VerifyPassword(user.Password!, request.Password))
-            return Result.Failure<JsonWebToken>(Error.Create("ExSI001", "Invalid username or password."));
+            return Result.Failure<JsonWebToken>(Error.Create("ExSI002", "Invalid username or password."));
 
         var refreshToken = Guid.NewGuid().ToString("N");
 
