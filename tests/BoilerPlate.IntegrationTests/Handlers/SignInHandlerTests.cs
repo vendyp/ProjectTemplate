@@ -34,7 +34,7 @@ public class SignInHandlerTests : IClassFixture<ServiceFixture>
     }
 
     [Fact]
-    public async Task SignIn_WithInvalidUsername_ShouldReturn_Error()
+    public async Task SignIn_WithInvalidPassword_ShouldReturn_Error()
     {
         const string password = "Qwerty@12345"; //default password is Qwerty@1234
 
@@ -47,7 +47,7 @@ public class SignInHandlerTests : IClassFixture<ServiceFixture>
 
         result.IsFailure.ShouldBeTrue();
         result.IsSuccess.ShouldBeFalse();
-        result.Error.Code.ShouldBe("ExSI001");
+        result.Error.Code.ShouldBe("ExSI002");
     }
 
     [Fact]
