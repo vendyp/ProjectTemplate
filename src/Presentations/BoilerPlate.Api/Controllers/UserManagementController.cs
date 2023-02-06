@@ -72,6 +72,7 @@ public sealed class UserManagementController : BaseController
     /// <param name="page"></param>
     /// <param name="pageSize"></param>
     /// <param name="orderBy"></param>
+    /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpGet("users")]
     [ProducesResponseType(typeof(PagedList<UserResponse>), StatusCodes.Status200OK)]
@@ -81,8 +82,10 @@ public sealed class UserManagementController : BaseController
         string? fullName,
         int page,
         int pageSize,
-        string orderBy)
-        => ConstructResult(await Sender.Send(new GetUsersQuery(page, pageSize, orderBy, fullName, username)));
+        string orderBy,
+        CancellationToken cancellationToken)
+        => ConstructResult(await Sender.Send(new GetUsersQuery(page, pageSize, orderBy, fullName, username),
+            cancellationToken));
 
     /// <summary>
     /// Get User by Id API
@@ -94,7 +97,8 @@ public sealed class UserManagementController : BaseController
     [ProducesResponseType(typeof(PagedList<UserResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetUserByIdAsync(
-        [FromRoute] Guid id, CancellationToken cancellationToken)
+        [FromRoute] Guid id,
+        CancellationToken cancellationToken)
     {
         var query = new GetUserByIdQuery(id);
         return ConstructResult(await Sender.Send(query, cancellationToken));
