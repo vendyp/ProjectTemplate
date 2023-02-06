@@ -30,6 +30,12 @@ public class SqlServerDbContext : DbContext, IDbContext
         where TEntity : BaseEntity =>
         Set<TEntity>().Add(entity);
 
+    public void UpdateEntity<TEntity>(TEntity entity) where TEntity : BaseEntity =>
+        Set<TEntity>().Update(entity);
+
+    public void AttachEntity<TEntity>(TEntity entity) where TEntity : BaseEntity =>
+        Set<TEntity>().Attach(entity);
+
     public new void Remove<TEntity>(TEntity entity)
         where TEntity : BaseEntity =>
         Set<TEntity>().Remove(entity);

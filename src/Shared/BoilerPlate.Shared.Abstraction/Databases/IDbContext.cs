@@ -24,6 +24,9 @@ public interface IDbContext
     void Insert<TEntity>(TEntity entity)
         where TEntity : BaseEntity;
 
+    void AttachEntity<TEntity>(TEntity entity)
+        where TEntity : BaseEntity;
+
     /// <summary>
     /// Removes the specified entity from the database.
     /// </summary>
