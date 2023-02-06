@@ -1,0 +1,31 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "Dwi Vendy Pratama",
+  "classifications": [ "Web/WebAPI" ],
+  "identity": "BoilerPlate.WebAPI",
+  "name": "Project template for WebAPI using clean architecture",
+  "shortName": "cleanwebapi",
+  "tags": {
+    "language": "C#",
+    "type": "project"
+  },
+  "sourceName": "BoilerPlate",
+  "sources": [
+    {
+      "modifiers": [
+        {
+          "exclude": [ 
+			".vs/**",
+			".vscode/**",
+			".git/**",
+			".github/**",
+			".idea/**",
+			"LICENSE",
+			"**/bin/**",
+			"**/obj/**"
+		  ]
+        }
+      ]
+    }
+  ]
+}
